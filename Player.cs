@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Quaridor
 {
-    enum PlayersType {North, South, East, West}
     enum Direction {Up, Right, Down, Left}
 
     class Wall
@@ -30,26 +29,26 @@ namespace Quaridor
     {
         int RowPos;
         int ColPos;
-        PlayersType type;
+        Direction playersDirection;
 
-        Player(PlayersType type)
+        Player(Direction dir)
         {
-            this.type = type;
-            switch(type)
+            this.playersDirection = dir;
+            switch(dir)
             {
-                case PlayersType.North:
+                case Direction.Down:
                     this.RowPos = 0;
                     this.ColPos = Board.BOARD_SIZE/2;
                     break;
-                case PlayersType.South:
+                case Direction.Up:
                     this.RowPos = Board.BOARD_SIZE-1;
                     this.ColPos = Board.BOARD_SIZE / 2;
                     break;
-                case PlayersType.West:
+                case Direction.Right:
                     this.RowPos = Board.BOARD_SIZE / 2;
                     this.ColPos = 0;
                     break;
-                case PlayersType.East:
+                case Direction.Left:
                     this.RowPos = Board.BOARD_SIZE/2;
                     this.ColPos = Board.BOARD_SIZE - 1;
                     break;
@@ -57,6 +56,27 @@ namespace Quaridor
                     //TODO: throw an error
                     break;
             }
+        }
+
+        public Direction getPlayersDirection()
+        {
+            return this.playersDirection;
+        }
+
+        public int getDestination()
+        {
+            int res = -1;
+            Direction pd = this.playersDirection;
+            if(pd == Direction.Down || pd == Direction.Left)
+            {
+                res = 0;
+            }
+            else if(pd == Direction.Up || pd == Direction.Right)
+            {
+                res = Board.BOARD_SIZE - 1;
+            }
+
+            return res;
         }
 
         /*
@@ -88,6 +108,16 @@ namespace Quaridor
             }
 
             return res;
+        }
+
+        public int getRowPos()
+        {
+            return this.RowPos;
+        }
+
+        public int getColPos()
+        {
+            return this.ColPos;
         }
 
     }
