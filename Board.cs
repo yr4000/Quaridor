@@ -15,11 +15,19 @@ namespace Quaridor
         Squares squares;
         Player[] Players;   //TODO: complete the initialization of this.
 
-        public Board()
+        public Board(int numberOFPlayers)
         {
             this.VerticalSlots = new Slots();
             this.HorizontalSlots = new Slots();
             this.squares = new Squares();
+            this.Players = new Player[numberOFPlayers];
+            this.Players[0] = new Player(Direction.Up);
+            this.Players[1] = new Player(Direction.Down);
+            if(numberOFPlayers == 4)
+            {
+                this.Players[2] = new Player(Direction.Right);
+                this.Players[3] = new Player(Direction.Left);
+            }
         }
 
         /*
@@ -30,7 +38,7 @@ namespace Quaridor
          */
         public bool isPlayerBlocked(Player p)
         {
-            bool res = false;
+            bool res = true;
             List<int> squaresSeen = new List<int>();
 
             int currentPosition = getSquareIDfromPosition(p.getRowPos(), p.getColPos());
@@ -70,9 +78,9 @@ namespace Quaridor
                 currentSqaure = this.squares.SquareMatrix[currentPosition];
 
                 //if we got to the players destination 
-                if ()
+                if (didPlayerGotToDestination(p,currentPosition))
                 {
-                    res = true;
+                    res = false;
                     break;
                 }
             }
@@ -194,7 +202,30 @@ namespace Quaridor
             return res;
         }
 
+        bool didPlayerGotToDestination(Player p, int currentPosition)
+        {
+            bool res = false;
+            int rowCol = -1;
+            if(p.getPlayersDirection() == Direction.Up || p.getPlayersDirection() == Direction.Down)
+            {
+                rowCol = this.squares.getRowFromSquare(currentPosition);
+            }
+            else if(p.getPlayersDirection() == Direction.Right || p.getPlayersDirection() == Direction.Left)
+            {
+                rowCol = this.squares.getColFromSquare(currentPosition);
+            }
+
+            if(rowCol == p.getDestination())
+            {
+                res = true;
+            }
+
+            return res;
+        }
+
         //--------------------GUI----------------------------
+        //TODO: change it so this representation will be kept as a class variable, and we will just update this
+        //variable each move
 
         //prints the representation of the slots
         public void printBoard()
@@ -204,28 +235,28 @@ namespace Quaridor
             string sixSpaces = "      ";
             string HorizontalBlock = "BBBBBB";
             string Block = "B";
-            string BoardRpr = "";
+            StringBuilder BoardRpr = new StringBuilder();
 
             for (int i = 0; i < BOARD_SIZE; i++)
             {
                 //print upper part of the cells
                 for (int j = 0; j < BOARD_SIZE; j++)
                 {
-                    BoardRpr += markIntersection(i, j);
+                    BoardRpr.Append(markIntersection(i, j));
 
-                    BoardRpr += " ";
+                    BoardRpr.Append(" ");
                     if (i == 0 || !this.HorizontalSlots.isOccupied(i, j))
                     {
-                        BoardRpr += HorizontalBorder;
+                        BoardRpr.Append(HorizontalBorder);
                     }
                     else
                     {
-                        BoardRpr += HorizontalBlock;
+                        BoardRpr.Append(HorizontalBlock);
                     }
-                    BoardRpr += " ";
+                    BoardRpr.Append(" ");
 
                 }
-                BoardRpr += Environment.NewLine;
+                BoardRpr.Append(Environment.NewLine);
 
                 //print the rest of the cells
                 for (int k = 0; k < 3; k++)
@@ -238,25 +269,32 @@ namespace Quaridor
                         }
                         else if (this.VerticalSlots.isOccupied(i, j))
                         {
-                            BoardRpr += Block;
+                            BoardRpr.Append(Block);
                         }
                         else
                         {
-                            BoardRpr += " ";
+                            BoardRpr.Append(" ");
                         }
 
                         if (k != 2)
                         {
-                            BoardRpr = BoardRpr + VerticalBorder + sixSpaces + VerticalBorder;
+                            BoardRpr.Append(VerticalBorder + sixSpaces + VerticalBorder);
                         }
                         else
                         {
-                            BoardRpr = BoardRpr + VerticalBorder + HorizontalBorder + VerticalBorder;
+                            BoardRpr.Append(VerticalBorder + HorizontalBorder + VerticalBorder);
                         }
                     }
-                    BoardRpr += Environment.NewLine;
+                    BoardRpr.Append(Environment.NewLine);
                 }
             }
+
+
+            foreach(Player p in this.Players)
+            {
+                addPlayerToBoard(p, BoardRpr);
+            }
+
             Console.Write(BoardRpr);
         }
 
@@ -276,6 +314,19 @@ namespace Quaridor
             }
 
             return res;
+        }
+
+        public void addPlayerToBoard(Player p, StringBuilder BoardRpr)
+        {
+            int squareSize = this.squares.getSize();
+            //since we add to each square the size of the next slot to it's right, we decrease 1 from the newLine length
+            int rowSlice = squareSize * BOARD_SIZE + Environment.NewLine.Length-1;
+            //each row consists of 4 slices, and we want to print the player on the third row
+            int i = p.getRowPos()* rowSlice * 4 + 2 * rowSlice;
+            //qw want to print the player on the fifth place in the third row of the square
+            int j = p.getColPos() * squareSize + 4;
+
+            BoardRpr[i + j] = p.getRepresentation();
         }
     }
 
