@@ -9,6 +9,7 @@ namespace Quaridor
     class Squares
     {
         public PlayerCell[] SquareMatrix;
+        int Size = 9;
 
         public Squares()
         {
@@ -68,15 +69,20 @@ namespace Quaridor
         }
 
         //return's the i'th index of  square
-        int getRowFromSquare(int square)
+        public int getRowFromSquare(int square)
         {
             return square / Board.BOARD_SIZE;
         }
 
         //return's the j'th index of  square
-        int getColFromSquare(int square)
+        public int getColFromSquare(int square)
         {
             return square % Board.BOARD_SIZE;
+        }
+
+        public int getSize()
+        {
+            return this.Size;
         }
 
     }
