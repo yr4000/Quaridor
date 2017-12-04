@@ -29,9 +29,10 @@ namespace Quaridor
     {
         int RowPos;
         int ColPos;
+        char rpr;
         Direction playersDirection;
 
-        Player(Direction dir)
+        public Player(Direction dir)
         {
             this.playersDirection = dir;
             switch(dir)
@@ -39,28 +40,27 @@ namespace Quaridor
                 case Direction.Down:
                     this.RowPos = 0;
                     this.ColPos = Board.BOARD_SIZE/2;
+                    this.rpr = 'B';
                     break;
                 case Direction.Up:
                     this.RowPos = Board.BOARD_SIZE-1;
                     this.ColPos = Board.BOARD_SIZE / 2;
+                    this.rpr = 'A';
                     break;
                 case Direction.Right:
                     this.RowPos = Board.BOARD_SIZE / 2;
                     this.ColPos = 0;
+                    this.rpr = 'C';
                     break;
                 case Direction.Left:
                     this.RowPos = Board.BOARD_SIZE/2;
                     this.ColPos = Board.BOARD_SIZE - 1;
+                    this.rpr = 'D';
                     break;
                 default:
                     //TODO: throw an error
                     break;
             }
-        }
-
-        public Direction getPlayersDirection()
-        {
-            return this.playersDirection;
         }
 
         public int getDestination()
@@ -118,6 +118,16 @@ namespace Quaridor
         public int getColPos()
         {
             return this.ColPos;
+        }
+
+        public Direction getPlayersDirection()
+        {
+            return this.playersDirection;
+        }
+
+        public char getRepresentation()
+        {
+            return this.rpr;
         }
 
     }
