@@ -24,7 +24,10 @@ namespace Quaridor
                     break;
             }
 
-            Console.WriteLine("Attempt to place an " + type + " wall in (" + row + "," + col + ") resulted in: " + res);
+            if(doPrint)
+            {
+                Console.WriteLine("Attempt to place an " + type + " wall in (" + row + "," + col + ") resulted in: " + res);
+            }
         }
     }
 }
