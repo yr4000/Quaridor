@@ -30,6 +30,16 @@ namespace Quaridor
             }
         }
 
+        public Player getPlayer(int playersIndex)
+        {
+            return this.Players[playersIndex];
+        }
+
+        public int getNumberOfPlayers()
+        {
+            return this.Players.Length;
+        }
+
         /*
          * input: players position and the destenation row 
          * output: true if the player has a route to it's destenation, else false
@@ -57,7 +67,7 @@ namespace Quaridor
                     currentSqaure.color = DFSColor.Grey;
                 }
                 //If we can move in movingDirection from currentPosition, nextPosition will get the next position index
-                nextPosition = tryToMove(p, movingDirection, currentPosition);
+                nextPosition = tryToMove(p, movingDirection);
 
                 //if next position is illegal or the color of the next square is not white
                 if(nextPosition < 0 || this.squares.SquareMatrix[nextPosition].color != DFSColor.White)
@@ -168,10 +178,11 @@ namespace Quaridor
             return res;
         }
 
-        int tryToMove(Player p, Direction movingDirection, int currentPosition)
+        public int tryToMove(Player p, Direction movingDirection)
         {
             int res = -1;
-            switch(movingDirection)
+            int currentPosition = getSquareIDfromPosition(p.getRowPos(), p.getColPos());
+            switch (movingDirection)
             {
                 case Direction.Up:
                     if(!this.HorizontalSlots.isOccupied(p.getRowPos(), p.getColPos()))
