@@ -83,22 +83,21 @@ namespace Quaridor
          * Moves the player to one of four direction.
          * NOTE: this function is not responsible to check if the move is legal.
         */
-        public bool move(string direction)
+        public bool move(Direction direction)
         {
-            direction = direction.ToLower();
             bool res = true;
             switch(direction)
             {
-                case "up":
+                case Direction.Up:
                     this.RowPos++;
                     break;
-                case "right":
+                case Direction.Right:
                     this.ColPos++;
                     break;
-                case "down":
+                case Direction.Down:
                     this.RowPos--;
                     break;
-                case "left":
+                case Direction.Left:
                     this.ColPos--;
                     break;
                 default:
