@@ -10,35 +10,115 @@ namespace Quaridor
     {
         static void Main(string[] args)
         {
-            int numberOfPlayers = 4;
+            int numberOfPlayers = 2;
+            Board board = new Board(numberOfPlayers);
             bool doPrint = false;
 
-            Board b = new Board(numberOfPlayers);
-            Tests.testPlaceWall(b, 0, 0, "H", doPrint);
-            Tests.testPlaceWall(b, 0, 1, "H", doPrint);
-            Tests.testPlaceWall(b, 1, 0, "H", doPrint);
-            Tests.testPlaceWall(b, 1, 1, "H", doPrint);
-            Tests.testPlaceWall(b, 4, 4, "H", doPrint);
+            //this is for tests
+            Tests.testPlaceWall(board, 0, 0, "H", doPrint);
+            Tests.testPlaceWall(board, 0, 1, "H", doPrint);
+            Tests.testPlaceWall(board, 1, 0, "H", doPrint);
+            Tests.testPlaceWall(board, 1, 1, "H", doPrint);
+            Tests.testPlaceWall(board, 4, 4, "H", doPrint);
 
-            Tests.testPlaceWall(b, 0, 0, "V", doPrint);
-            Tests.testPlaceWall(b, 1, 0, "V", doPrint);
-            Tests.testPlaceWall(b, 0, 1, "V", doPrint);
-            Tests.testPlaceWall(b, 1, 2, "V", doPrint);
-            Tests.testPlaceWall(b, 4, 3, "V", doPrint);
+            Tests.testPlaceWall(board, 0, 0, "V", doPrint);
+            Tests.testPlaceWall(board, 1, 0, "V", doPrint);
+            Tests.testPlaceWall(board, 0, 1, "V", doPrint);
+            Tests.testPlaceWall(board, 1, 2, "V", doPrint);
+            Tests.testPlaceWall(board, 4, 3, "V", doPrint);
 
-            Tests.testPlaceWall(b, 4, 3, "H", doPrint);
-            Tests.testPlaceWall(b, 1, 3, "V", doPrint);
-            Tests.testPlaceWall(b, 1, 3, "H", doPrint);
+            Tests.testPlaceWall(board, 4, 3, "H", doPrint);
+            Tests.testPlaceWall(board, 1, 3, "V", doPrint);
+            Tests.testPlaceWall(board, 1, 3, "H", doPrint);
 
-            b.printBoard();
+            board.printBoard();
             Console.WriteLine("Press any key to continue....");
             Console.ReadKey();
 
             //present game rules
             //Console.ReadKey();
             //Console.Clear();
-            //while(true)
-            //choose a player to play it's turn
+            int row, col, currentPlayerIndex = 0;
+            string[] move;
+            bool isLegalMove;
+            while(true)
+            {
+                isLegalMove = false;
+                Player currentPlayer = board.getPlayer(currentPlayerIndex);
+                board.printBoard();
+                while(!isLegalMove)
+                {
+                    Console.WriteLine("Please enter your move: ");
+                    move = Console.ReadLine().Split(' ');
+                    move[0] = move[0].ToLower();
+                    switch (move[0])
+                    {
+                        case "up":
+                            if (board.tryToMove(currentPlayer, Direction.Up) > 0)
+                            {
+                                currentPlayer.move(Direction.Up);
+                                isLegalMove = true;
+                            }
+                            break;
+                        case "down":
+                            if (board.tryToMove(currentPlayer, Direction.Down) > 0)
+                            {
+                                currentPlayer.move(Direction.Down);
+                                isLegalMove = true;
+                            }
+                            break;
+                        case "left":
+                            if (board.tryToMove(currentPlayer, Direction.Left) > 0)
+                            {
+                                currentPlayer.move(Direction.Left);
+                                isLegalMove = true;
+                            }
+                            break;
+                        case "right":
+                            if (board.tryToMove(currentPlayer, Direction.Right) > 0)
+                            {
+                                currentPlayer.move(Direction.Right);
+                                isLegalMove = true;
+                            }
+                            break;
+                        case "place":
+                            if (move.Length < 4 || !int.TryParse(move[2], out row) || int.TryParse(move[3], out col))
+                            {
+                                Console.WriteLine("Illegal arguments for place wall move");
+                            }
+                            else
+                            {
+                                move[1] = move[1].ToLower();
+                                if (move[1] == "hwall")
+                                {
+                                    if(board.placeHWall(row, col))
+                                        isLegalMove = true;
+                                }
+                                else if (move[1] == "vwall")
+                                {
+                                    if(board.placeVWall(row, col))
+                                        isLegalMove = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Illegal move: no such move.");
+                                }
+                            }
+                            break;
+                        case "restart":
+                            //TODO: complete
+                            break;
+                        case "quit":
+                            lshfleshldkfh
+                            break;
+                        default:
+                            Console.WriteLine("Illegal move: no such move.");
+                            break;
+                    }
+                }
+
+                currentPlayerIndex = (currentPlayerIndex + 1) % board.getNumberOfPlayers();
+            }
             //recieve an input from the player which is the move he does (moving or placing wall)
             //if the move is legal - modify the board, reprint it and change to the next player, else print en error message and wait for another command
             //if one of the players won - print a message, wait for him to press a key (new game?) and break out of the loop
