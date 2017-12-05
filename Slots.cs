@@ -27,34 +27,23 @@ namespace Quaridor
 
         /*
          * Places a wall if the slots are not taken or not on the edges.
-         * NOTE: this method is not responsible to check if the player is blocked.=!
          */
         public bool placeWall(int RowPos1, int ColPos1, int RowPos2, int ColPos2)
         {
             bool res = true;
             //Player tries to place a wall on the edge - illegal!
-            /*
-            if (RowPos1 == 0 || RowPos1 == Board.BOARD_SIZE + 1 ||
-                ColPos1 == 0 || ColPos1 == Board.BOARD_SIZE + 1 ||
-                RowPos2 == 0 || RowPos2 == Board.BOARD_SIZE + 1 ||
-                ColPos2 == 0 || ColPos2 == Board.BOARD_SIZE + 1)
+            if (RowPos1 < 0 || RowPos1 > Board.BOARD_SIZE ||
+                ColPos1 < 0 || ColPos1 > Board.BOARD_SIZE ||
+                RowPos2 < 0 || RowPos2 > Board.BOARD_SIZE ||
+                ColPos2 < 0 || ColPos2 > Board.BOARD_SIZE)
             {
                 res = false;
             }
-            */
             //Player tries to place a wall on an occupied slot - illegal!
             if (this.SlotsMatrix[RowPos1, ColPos1].Occupied || this.SlotsMatrix[RowPos2, ColPos2].Occupied)
             {
                 res = false;
             }
-            /*
-            //Player tries to block himself or the opponent - illegal!
-            else if (isPlayerBlocked(playersRowPos, playersColPos, playersdestRow) ||
-                isPlayerBlocked(opponentRowPos, opponentColPos, opponentdestRow))
-            {
-                res = false;
-            }
-            */
             //everything is ok
             else
             {
