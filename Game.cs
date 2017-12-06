@@ -51,72 +51,73 @@ namespace Quaridor
                     Console.WriteLine("Please enter your move: ");
                     move = Console.ReadLine().Split(' ');
                     move[0] = move[0].ToLower();
-                    switch (move[0])
+                    if (move[0] == "up")
                     {
-                        case "up":
-                            if (board.tryToMove(currentPlayer, Direction.Up) > 0)
+                        if (board.tryToMove(currentPlayer, Direction.Up) > 0)
+                        {
+                            currentPlayer.move(Direction.Up);
+                            isLegalMove = true;
+                        }
+                    }
+                    else if (move[0] == "down")
+                    {
+                        if (board.tryToMove(currentPlayer, Direction.Down) > 0)
+                        {
+                            currentPlayer.move(Direction.Down);
+                            isLegalMove = true;
+                        }
+                    }
+                    else if (move[0] == "left")
+                    {
+                        if (board.tryToMove(currentPlayer, Direction.Left) > 0)
+                        {
+                            currentPlayer.move(Direction.Left);
+                            isLegalMove = true;
+                        }
+                    }
+                    else if (move[0] == "right")
+                    {
+                        if (board.tryToMove(currentPlayer, Direction.Right) > 0)
+                        {
+                            currentPlayer.move(Direction.Right);
+                            isLegalMove = true;
+                        }
+                    }
+                    else if (move[0] == "place")
+                    {
+                        if (move.Length < 4 || !int.TryParse(move[2], out row) || int.TryParse(move[3], out col))
+                        {
+                            Console.WriteLine("Illegal arguments for place wall move");
+                        }
+                        else
+                        {
+                            move[1] = move[1].ToLower();
+                            if (move[1] == "hwall")
                             {
-                                currentPlayer.move(Direction.Up);
-                                isLegalMove = true;
+                                if (board.placeHWall(row, col))
+                                    isLegalMove = true;
                             }
-                            break;
-                        case "down":
-                            if (board.tryToMove(currentPlayer, Direction.Down) > 0)
+                            else if (move[1] == "vwall")
                             {
-                                currentPlayer.move(Direction.Down);
-                                isLegalMove = true;
+                                if (board.placeVWall(row, col))
+                                    isLegalMove = true;
                             }
-                            break;
-                        case "left":
-                            if (board.tryToMove(currentPlayer, Direction.Left) > 0)
-                            {
-                                currentPlayer.move(Direction.Left);
-                                isLegalMove = true;
-                            }
-                            break;
-                        case "right":
-                            if (board.tryToMove(currentPlayer, Direction.Right) > 0)
-                            {
-                                currentPlayer.move(Direction.Right);
-                                isLegalMove = true;
-                            }
-                            break;
-                        case "place":
-                            if (move.Length < 4 || !int.TryParse(move[2], out row) || int.TryParse(move[3], out col))
-                            {
-                                Console.WriteLine("Illegal arguments for place wall move");
-                            }
-                            else
-                            {
-                                move[1] = move[1].ToLower();
-                                if (move[1] == "hwall")
-                                {
-                                    if(board.placeHWall(row, col))
-                                        isLegalMove = true;
-                                }
-                                else if (move[1] == "vwall")
-                                {
-                                    if(board.placeVWall(row, col))
-                                        isLegalMove = true;
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Illegal move: no such move.");
-                                }
-                            }
-                            break;
-                        case "restart":
-                            //TODO: complete
-                            break;
-                        case "quit":
-                            lshfleshldkfh
-                            break;
-                        default:
-                            Console.WriteLine("Illegal move: no such move.");
-                            break;
+                        }
+                    }
+                    else if (move[0] == "restart")
+                    {
+                        //TODO: complete
+                    }
+                    else if (move[0] == "quit")
+                    {
+                        lshfleshldkfh
+                    }
+
+                    if (!isLegalMove)
+                    {
+                        Console.WriteLine("Illegal move: no such move.");
                     }
                 }
-
                 currentPlayerIndex = (currentPlayerIndex + 1) % board.getNumberOfPlayers();
             }
             //recieve an input from the player which is the move he does (moving or placing wall)
