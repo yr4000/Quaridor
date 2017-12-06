@@ -57,6 +57,34 @@ namespace Quaridor
             return res;
         }
 
+        public bool removeWall(int RowPos1, int ColPos1, int RowPos2, int ColPos2)
+        {
+            bool res = true;
+            //Player tries to place a wall on the edge - illegal!
+            if (RowPos1 < 0 || RowPos1 > Board.BOARD_SIZE ||
+                ColPos1 < 0 || ColPos1 > Board.BOARD_SIZE ||
+                RowPos2 < 0 || RowPos2 > Board.BOARD_SIZE ||
+                ColPos2 < 0 || ColPos2 > Board.BOARD_SIZE)
+            {
+                res = false;
+            }
+            //you can't remove half a wall
+            else if (this.SlotsMatrix[RowPos1, ColPos1].wall.getId() != this.SlotsMatrix[RowPos2, ColPos2].wall.getId())
+            {
+                res = false;
+            }
+            //everything is ok
+            else
+            {
+                this.SlotsMatrix[RowPos1, ColPos1].Occupied = false;
+                this.SlotsMatrix[RowPos1, ColPos1].wall = null;
+                this.SlotsMatrix[RowPos2, ColPos2].Occupied = false;
+                this.SlotsMatrix[RowPos2, ColPos2].wall = null;
+            }
+
+            return res;
+        }
+
         public bool isOccupied(int row, int col)
         {
             return this.SlotsMatrix[row, col].Occupied;
