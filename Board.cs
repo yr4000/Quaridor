@@ -13,7 +13,8 @@ namespace Quaridor
         Slots VerticalSlots;
         Slots HorizontalSlots;
         Squares squares;
-        Player[] Players;   //TODO: complete the initialization of this.
+        Player[] Players;
+        StringBuilder[][] BoardRpr;     //holds a representation of the board
 
         public Board(int numberOFPlayers)
         {
@@ -28,6 +29,7 @@ namespace Quaridor
                 this.Players[2] = new Player(Direction.Right);
                 this.Players[3] = new Player(Direction.Left);
             }
+            this.BoardRpr = initializeBoardRpr();
         }
 
         public Player getPlayer(int playersIndex)
@@ -126,8 +128,32 @@ namespace Quaridor
 
         public bool placeHWall(int row, int col)
         {
+            bool res = true;
             if (row == 0 || col==0 || isIntersectionBlocked(row,col) ||
                 !this.HorizontalSlots.placeWall(row, col, row, col - 1))
+            {
+                return false;
+            }
+
+            foreach(Player p in this.Players)
+            {
+                if(isPlayerBlocked(p))
+                {
+                    res = false;
+                    if(!removeHWall(row, col))
+                    {
+                        //TODO: throw exception
+                    }
+                    break;
+                }
+            }
+
+            return res;
+        }
+
+        public bool removeHWall(int row, int col)
+        {
+            if(row == 0 || col == 0 || !this.HorizontalSlots.removeWall(row, col, row, col - 1))
             {
                 return false;
             }
@@ -137,8 +163,32 @@ namespace Quaridor
 
         public bool placeVWall(int row, int col)
         {
+            bool res = true;
             if (col==0 || row==0 || isIntersectionBlocked(row, col)
                 || !this.VerticalSlots.placeWall(row, col, row - 1, col))
+            {
+                return false;
+            }
+
+            foreach (Player p in this.Players)
+            {
+                if (isPlayerBlocked(p))
+                {
+                    res = false;
+                    if(!removeVWall(row, col))
+                    {
+                        //TODO: throw an exception
+                    }
+                    break;
+                }
+            }
+
+            return res;
+        }
+
+        public bool removeVWall(int row, int col)
+        {
+            if (row == 0 || col == 0 || !this.VerticalSlots.removeWall(row, col, row - 1, col))
             {
                 return false;
             }
@@ -238,7 +288,60 @@ namespace Quaridor
         //TODO: change it so this representation will be kept as a class variable, and we will just update this
         //variable each move
 
-        //prints the representation of the slots
+        StringBuilder[][] initializeBoardRpr()
+        {
+            string HorizontalBorder = "______";
+            string VerticalBorder = "|";
+            string sixSpaces = "      ";
+
+            StringBuilder[][] res = new StringBuilder[Board.BOARD_SIZE][];
+            for(int i=0; i<Board.BOARD_SIZE; i++)
+            {
+                res[i] = new StringBuilder[this.squares.getHeight()];
+                
+                for(int j=0; j<this.squares.getHeight(); j++)
+                {
+                    //print upper part of the cells
+                    for (int m = 0; m < BOARD_SIZE; m++)
+                    {
+                        res[i][j].Append(markIntersection(i, m));
+
+                        res[i][j].Append(" ");
+                        res[i][j].Append(HorizontalBorder);
+                        res[i][j].Append(" ");
+
+                    }
+                    res[i][j].Append(Environment.NewLine);
+
+                    //print the rest of the cells
+                    for (int k = 0; k < this.squares.getHeight() - 1; k++)
+                    {
+                        for (int m = 0; m < BOARD_SIZE; m++)
+                        {
+                            if (j > 0)
+                            {
+                                res[i][j].Append(" ");
+                            }
+
+                            if (k != 2)
+                            {
+                                res[i][j].Append(VerticalBorder + sixSpaces + VerticalBorder);
+                            }
+                            else
+                            {
+                                res[i][j].Append(VerticalBorder + HorizontalBorder + VerticalBorder);
+                            }
+                        }
+                        res[i][j].Append(Environment.NewLine);
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        //TODO: update
+        //prints the representation of the board
         public void printBoard()
         {
             string HorizontalBorder = "______";
@@ -303,13 +406,14 @@ namespace Quaridor
 
             foreach(Player p in this.Players)
             {
-                addPlayerToBoard(p, BoardRpr);
+                paintPlayerToBoard(p, BoardRpr);
             }
 
             Console.Write(BoardRpr);
         }
 
-        public string markIntersection(int row, int col)
+        //TODO: get rid of this?
+        string markIntersection(int row, int col)
         {
             string res = "";
             if (col != 0)
@@ -327,9 +431,10 @@ namespace Quaridor
             return res;
         }
 
-        public void addPlayerToBoard(Player p, StringBuilder BoardRpr)
+        //TODO: update
+        void paintPlayerToBoard(Player p, StringBuilder BoardRpr)
         {
-            int squareSize = this.squares.getSize();
+            int squareSize = this.squares.getWidth();
             //since we add to each square the size of the next slot to it's right, we decrease 1 from the newLine length
             int rowSlice = squareSize * BOARD_SIZE + Environment.NewLine.Length-1;
             //each row consists of 4 slices, and we want to print the player on the third row
@@ -339,6 +444,38 @@ namespace Quaridor
 
             BoardRpr[i + j] = p.getRepresentation();
         }
+
+        void paintHWall(int row, int col)
+        {
+            complete
+        }
+
+        void paintVWall(int row, int col)
+        {
+            complete
+        }
+
+        //TODO: the idea is that if a wall wasn't removed, I will still see on on the represantation. but is it necessary?
+        void eraseHWall(int row, int col)
+        {
+            complete
+        }
+
+        void eraseVWall(int row, int col)
+        {
+            complete
+        }
+
+        void paintSquare(DFSColor c)
+        {
+            complete
+        }
+
+        int getSquareRprIndex(int col)
+        {
+            return col * this.squares.getWidth();
+        }
+
     }
 
 }
