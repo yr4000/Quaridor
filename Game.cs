@@ -10,7 +10,7 @@ namespace Quaridor
     {
         static void Main(string[] args)
         {
-            int numberOfPlayers = 2;
+            int numberOfPlayers = 4;
             Board board = new Board(numberOfPlayers);
             bool doPrint = false;
 
@@ -30,7 +30,12 @@ namespace Quaridor
             Tests.testPlaceWall(board, 4, 3, "H", doPrint);
             Tests.testPlaceWall(board, 1, 3, "V", doPrint);
             Tests.testPlaceWall(board, 1, 3, "H", doPrint);
-
+            /*
+            board.paintSquare(0, 0, DFSColor.Black);
+            board.paintSquare(8, 8, DFSColor.Black);
+            board.paintSquare(6, 7, DFSColor.Grey);
+            board.paintSquare(7, 5, DFSColor.Grey);
+            */
             board.printBoard();
             Console.WriteLine("Press any key to continue....");
             Console.ReadKey();
@@ -41,6 +46,8 @@ namespace Quaridor
             int row, col, currentPlayerIndex = 0;
             string[] move;
             bool isLegalMove;
+
+            /*
             while(true)
             {
                 isLegalMove = false;
@@ -110,7 +117,7 @@ namespace Quaridor
                     }
                     else if (move[0] == "quit")
                     {
-                        lshfleshldkfh
+                        //lshfleshldkfh
                     }
 
                     if (!isLegalMove)
@@ -124,6 +131,7 @@ namespace Quaridor
             //if the move is legal - modify the board, reprint it and change to the next player, else print en error message and wait for another command
             //if one of the players won - print a message, wait for him to press a key (new game?) and break out of the loop
             //if at any time the player types "quit", we break out of the loop and the game ends.
+            */
         }
     }
 }
