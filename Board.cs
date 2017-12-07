@@ -134,7 +134,7 @@ namespace Quaridor
             {
                 return false;
             }
-
+            /*
             foreach(Player p in this.Players)
             {
                 if(isPlayerBlocked(p))
@@ -146,6 +146,11 @@ namespace Quaridor
                     }
                     break;
                 }
+            }
+            */
+            if(res)
+            {
+                paintHWall(row, col);
             }
 
             return res;
@@ -170,6 +175,7 @@ namespace Quaridor
                 return false;
             }
 
+            /*
             foreach (Player p in this.Players)
             {
                 if (isPlayerBlocked(p))
@@ -181,6 +187,12 @@ namespace Quaridor
                     }
                     break;
                 }
+            }
+            */
+
+            if(res)
+            {
+                paintVWall(row, col);
             }
 
             return res;
@@ -287,13 +299,14 @@ namespace Quaridor
         //--------------------GUI----------------------------
         //TODO: change it so this representation will be kept as a class variable, and we will just update this
         //variable each move
+        static string HorizontalBorder = "______";
+        static string VerticalBorder = "|";
+        static string sixSpaces = "      ";
+        static char Block = 'B';
+        static char Space = ' ';
 
         StringBuilder[][] initializeBoardRpr()
         {
-            string HorizontalBorder = "______";
-            string VerticalBorder = "|";
-            string sixSpaces = "      ";
-
             StringBuilder[][] res = new StringBuilder[Board.BOARD_SIZE][];
             for(int i=0; i<Board.BOARD_SIZE; i++)
             {
@@ -301,174 +314,131 @@ namespace Quaridor
                 
                 for(int j=0; j<this.squares.getHeight(); j++)
                 {
+                    res[i][j] = new StringBuilder();
                     //print upper part of the cells
-                    for (int m = 0; m < BOARD_SIZE; m++)
+                    for (int m = 0; j==0 && m < BOARD_SIZE; m++)
                     {
-                        res[i][j].Append(markIntersection(i, m));
+                        if (m > 0)
+                        {
+                            res[i][j].Append(Space);
+                        }
 
-                        res[i][j].Append(" ");
+                        res[i][j].Append(Space);
                         res[i][j].Append(HorizontalBorder);
-                        res[i][j].Append(" ");
+                        res[i][j].Append(Space);
 
                     }
-                    res[i][j].Append(Environment.NewLine);
 
                     //print the rest of the cells
-                    for (int k = 0; k < this.squares.getHeight() - 1; k++)
+                    for (int m = 0; j > 0 && m < BOARD_SIZE; m++)
                     {
-                        for (int m = 0; m < BOARD_SIZE; m++)
+                        if (m > 0)
                         {
-                            if (j > 0)
-                            {
-                                res[i][j].Append(" ");
-                            }
-
-                            if (k != 2)
-                            {
-                                res[i][j].Append(VerticalBorder + sixSpaces + VerticalBorder);
-                            }
-                            else
-                            {
-                                res[i][j].Append(VerticalBorder + HorizontalBorder + VerticalBorder);
-                            }
+                            res[i][j].Append(Space);
                         }
-                        res[i][j].Append(Environment.NewLine);
+
+                        if (j != this.squares.getHeight() - 1)
+                        {
+                            res[i][j].Append(VerticalBorder + sixSpaces + VerticalBorder);
+                        }
+                        else
+                        {
+                            res[i][j].Append(VerticalBorder + HorizontalBorder + VerticalBorder);
+                        }
                     }
+                    res[i][j].Append(Environment.NewLine);
                 }
+            }
+
+            foreach (Player p in this.Players)
+            {
+                paintPlayerToBoard(p, res);
             }
 
             return res;
         }
 
-        //TODO: update
-        //prints the representation of the board
         public void printBoard()
         {
-            string HorizontalBorder = "______";
-            string VerticalBorder = "|";
-            string sixSpaces = "      ";
-            string HorizontalBlock = "BBBBBB";
-            string Block = "B";
-            StringBuilder BoardRpr = new StringBuilder();
-
-            for (int i = 0; i < BOARD_SIZE; i++)
+            foreach(StringBuilder[] row in this.BoardRpr)
             {
-                //print upper part of the cells
-                for (int j = 0; j < BOARD_SIZE; j++)
+                foreach(StringBuilder slice in row)
                 {
-                    BoardRpr.Append(markIntersection(i, j));
-
-                    BoardRpr.Append(" ");
-                    if (i == 0 || !this.HorizontalSlots.isOccupied(i, j))
-                    {
-                        BoardRpr.Append(HorizontalBorder);
-                    }
-                    else
-                    {
-                        BoardRpr.Append(HorizontalBlock);
-                    }
-                    BoardRpr.Append(" ");
-
-                }
-                BoardRpr.Append(Environment.NewLine);
-
-                //print the rest of the cells
-                for (int k = 0; k < 3; k++)
-                {
-                    for (int j = 0; j < BOARD_SIZE; j++)
-                    {
-                        if (j == 0)
-                        {
-                            //do nothing
-                        }
-                        else if (this.VerticalSlots.isOccupied(i, j))
-                        {
-                            BoardRpr.Append(Block);
-                        }
-                        else
-                        {
-                            BoardRpr.Append(" ");
-                        }
-
-                        if (k != 2)
-                        {
-                            BoardRpr.Append(VerticalBorder + sixSpaces + VerticalBorder);
-                        }
-                        else
-                        {
-                            BoardRpr.Append(VerticalBorder + HorizontalBorder + VerticalBorder);
-                        }
-                    }
-                    BoardRpr.Append(Environment.NewLine);
+                    Console.Write(slice);
                 }
             }
-
-
-            foreach(Player p in this.Players)
-            {
-                paintPlayerToBoard(p, BoardRpr);
-            }
-
-            Console.Write(BoardRpr);
         }
 
         //TODO: get rid of this?
-        string markIntersection(int row, int col)
+        void markIntersection(int row, int col)
         {
-            string res = "";
             if (col != 0)
             {
                 if (row != 0 && isIntersectionBlocked(row, col))
                 {
-                    res = "B";
+                    this.BoardRpr[row][0][getSquareRprIndex(col)-1] = Block;
                 }
                 else
                 {
-                    res = " ";
+                    this.BoardRpr[row][0][getSquareRprIndex(col)-1] = Space;
                 }
             }
-
-            return res;
         }
 
-        //TODO: update
-        void paintPlayerToBoard(Player p, StringBuilder BoardRpr)
+        void paintPlayerToBoard(Player p, StringBuilder[][] BoardRpr)
         {
-            int squareSize = this.squares.getWidth();
-            //since we add to each square the size of the next slot to it's right, we decrease 1 from the newLine length
-            int rowSlice = squareSize * BOARD_SIZE + Environment.NewLine.Length-1;
-            //each row consists of 4 slices, and we want to print the player on the third row
-            int i = p.getRowPos()* rowSlice * 4 + 2 * rowSlice;
-            //qw want to print the player on the fifth place in the third row of the square
-            int j = p.getColPos() * squareSize + 4;
 
-            BoardRpr[i + j] = p.getRepresentation();
+            BoardRpr[p.getRowPos()][this.squares.getHeight()/2]
+                [getSquareRprIndex(p.getColPos()) + this.squares.getWidth()/2] = p.getRepresentation();
         }
 
-        void paintHWall(int row, int col)
+        void paintHWall(int row, int col, bool doErase = false)
         {
-            complete
+            char c = Block;
+            if (doErase)
+                c = Space;
+            for(int i=1; i<this.squares.getWidth()-2; i++)
+            {
+                this.BoardRpr[row][0][getSquareRprIndex(col) + i] = c;
+                this.BoardRpr[row][0][getSquareRprIndex(col-1) + i] = c;
+            }
+            markIntersection(row, col);
         }
 
-        void paintVWall(int row, int col)
+        void paintVWall(int row, int col, bool doErase = false)
         {
-            complete
+            char c = Block;
+            if (doErase)
+                c = Space;
+            for (int i=1; i<this.squares.getHeight(); i++)
+            {
+                this.BoardRpr[row][i][getSquareRprIndex(col)-1] = c;
+                this.BoardRpr[row - 1][i][getSquareRprIndex(col)-1] = c;
+            }
+
+            markIntersection(row, col);
         }
 
-        //TODO: the idea is that if a wall wasn't removed, I will still see on on the represantation. but is it necessary?
-        void eraseHWall(int row, int col)
-        {
-            complete
-        }
 
-        void eraseVWall(int row, int col)
+        //TODO: temporary public
+        void paintSquare(int row, int col, DFSColor color)
         {
-            complete
-        }
-
-        void paintSquare(DFSColor c)
-        {
-            complete
+            char c = ' ';
+            if(color == DFSColor.Grey)
+            {
+                c = '\\';
+            }
+            else if(color == DFSColor.Black)
+            {
+                c = 'X';
+            }
+            for(int i=1; i<this.squares.getHeight(); i++)
+            {
+                for(int j=1; j<this.squares.getWidth()-2; j++)
+                {
+                    this.BoardRpr[row][i][getSquareRprIndex(col) + j] = c;
+                }
+            }
         }
 
         int getSquareRprIndex(int col)
