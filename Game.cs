@@ -10,7 +10,7 @@ namespace Quaridor
     {
         static void Main(string[] args)
         {
-            int numberOfPlayers = 4;
+            int numberOfPlayers = 2;
             Board board = new Board(numberOfPlayers);
             bool doPrint = false;
 

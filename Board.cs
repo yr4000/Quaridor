@@ -14,7 +14,7 @@ namespace Quaridor
         Slots HorizontalSlots;
         Squares squares;
         Player[] Players;
-        StringBuilder[][] BoardRpr;     //holds a representation of the board
+        StringBuilder[][] BoardRpr;
 
         public Board(int numberOFPlayers)
         {
@@ -42,6 +42,21 @@ namespace Quaridor
             return this.Players.Length;
         }
 
+        //return represantation of the board as string, for debugging.
+        public string getBoardRprAsString()
+        {
+            StringBuilder res = new StringBuilder();
+            foreach (StringBuilder[] row in this.BoardRpr)
+            {
+                foreach (StringBuilder slice in row)
+                {
+                    res.Append(slice.ToString());
+                }
+            }
+
+            return res.ToString();
+        }
+
         /*
          * input: players position and the destenation row 
          * output: true if the player has a route to it's destenation, else false
@@ -61,24 +76,26 @@ namespace Quaridor
             //this.squares.SquareMatrix[currentPosition].color = DFSColor.Grey;
             //squaresSeen.Add(currentPosition);
 
-            while(squaresSeen.Count > 0)
+            do
             {
-                if(currentSqaure.color == DFSColor.White)
+                if (currentSqaure.color == DFSColor.White)
                 {
                     squaresSeen.Add(currentPosition);
                     currentSqaure.color = DFSColor.Grey;
+                    paintSquare(currentPosition, DFSColor.Grey);
                 }
                 //If we can move in movingDirection from currentPosition, nextPosition will get the next position index
                 nextPosition = tryToMove(p, movingDirection);
 
                 //if next position is illegal or the color of the next square is not white
-                if(nextPosition < 0 || this.squares.SquareMatrix[nextPosition].color != DFSColor.White)
+                if (nextPosition < 0 || this.squares.SquareMatrix[nextPosition].color != DFSColor.White)
                 {
                     movingDirection = getNextDirection(movingDirection);
                     //if we checked all moving directions around currentSquare
-                    if(movingDirection == pd)
+                    if (movingDirection == pd)
                     {
                         currentSqaure.color = DFSColor.Black;
+                        paintSquare(currentPosition, DFSColor.Black);
                         squaresSeen.RemoveAt(squaresSeen.Count - 1);
                         currentPosition = squaresSeen.Last();
                     }
@@ -90,14 +107,15 @@ namespace Quaridor
                 currentSqaure = this.squares.SquareMatrix[currentPosition];
 
                 //if we got to the players destination 
-                if (didPlayerGotToDestination(p,currentPosition))
+                if (didPlayerGotToDestination(p, currentPosition))
                 {
                     res = false;
                     break;
                 }
-            }
+            } while (squaresSeen.Count > 0);
 
             this.squares.clearBoard();
+            paintSquaresByTheirColor();
             return res;
         }
 
@@ -134,7 +152,7 @@ namespace Quaridor
             {
                 return false;
             }
-            /*
+            
             foreach(Player p in this.Players)
             {
                 if(isPlayerBlocked(p))
@@ -147,7 +165,7 @@ namespace Quaridor
                     break;
                 }
             }
-            */
+            
             if(res)
             {
                 paintHWall(row, col);
@@ -175,7 +193,7 @@ namespace Quaridor
                 return false;
             }
 
-            /*
+            
             foreach (Player p in this.Players)
             {
                 if (isPlayerBlocked(p))
@@ -188,7 +206,7 @@ namespace Quaridor
                     break;
                 }
             }
-            */
+            
 
             if(res)
             {
@@ -240,7 +258,8 @@ namespace Quaridor
             return res;
         }
 
-        public int tryToMove(Player p, Direction movingDirection)
+        //BUG: i always move from the same spot since the player doesn't actually change it's position
+        public int tryToMove(int currentPosition, Direction movingDirection)
         {
             int res = -1;
             int currentPosition = getSquareIDfromPosition(p.getRowPos(), p.getColPos());
@@ -420,7 +439,6 @@ namespace Quaridor
         }
 
 
-        //TODO: temporary public
         void paintSquare(int row, int col, DFSColor color)
         {
             char c = ' ';
@@ -441,9 +459,24 @@ namespace Quaridor
             }
         }
 
+        void paintSquare(int squarePosition, DFSColor color)
+        {
+            int row = this.squares.getRowFromSquare(squarePosition);
+            int col = this.squares.getColFromSquare(squarePosition);
+            paintSquare(row, col, color);
+        }
+
         int getSquareRprIndex(int col)
         {
             return col * this.squares.getWidth();
+        }
+
+        void paintSquaresByTheirColor()
+        {
+            for(int i=0; i<this.squares.SquareMatrix.Length; i++)
+            {
+                paintSquare(this.squares.getRowFromSquare(i), this.squares.getColFromSquare(i), this.squares.GetSquareColor(i));
+            }
         }
 
     }
