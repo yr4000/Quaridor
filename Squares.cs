@@ -91,5 +91,9 @@ namespace Quaridor
             return this.Height;
         }
 
+        public DFSColor GetSquareColor(int i)
+        {
+            return SquareMatrix[i].color;
+        }
     }
 }
