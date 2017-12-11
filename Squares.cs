@@ -14,7 +14,7 @@ namespace Quaridor
 
         public Squares()
         {
-            this.SquareMatrix = new PlayerCell[Board.BOARD_SIZE* Board.BOARD_SIZE];
+            this.SquareMatrix = new PlayerCell[Board.BOARD_SIZE * Board.BOARD_SIZE];
             for(int i=0; i<this.SquareMatrix.Length; i++)
             {
                 this.SquareMatrix[i] = new PlayerCell();
@@ -39,25 +39,25 @@ namespace Quaridor
             switch (dir)
             {
                 case Direction.Down:
-                    if(!(getRowFromSquare(square) >= Board.BOARD_SIZE-1))
+                    if(!(getRowFromPosition(square) >= Board.BOARD_SIZE-1))
                     {
                         res = square + Board.BOARD_SIZE;
                     }
                     break;
                 case Direction.Left:
-                    if(getColFromSquare(square) != 0)
+                    if(getColFromPosition(square) != 0)
                     {
                         res = square - 1;
                     }
                     break;
                 case Direction.Up:
-                    if(!(getRowFromSquare(square) <= 0))
+                    if(!(getRowFromPosition(square) <= 0))
                     {
                         res = square - Board.BOARD_SIZE;
                     }
                     break;
                 case Direction.Right:
-                    if(getColFromSquare(square) != Board.BOARD_SIZE-1)
+                    if(getColFromPosition(square) != Board.BOARD_SIZE-1)
                     {
                         res = square + 1;
                     }
@@ -70,15 +70,15 @@ namespace Quaridor
         }
 
         //return's the i'th index of  square
-        public int getRowFromSquare(int square)
+        public int getRowFromPosition(int pos)
         {
-            return square / Board.BOARD_SIZE;
+            return pos / Board.BOARD_SIZE;
         }
 
         //return's the j'th index of  square
-        public int getColFromSquare(int square)
+        public int getColFromPosition(int pos)
         {
-            return square % Board.BOARD_SIZE;
+            return pos % Board.BOARD_SIZE;
         }
 
         public int getWidth()

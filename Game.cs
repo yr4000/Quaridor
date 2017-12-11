@@ -10,10 +10,9 @@ namespace Quaridor
     {
         static void Main(string[] args)
         {
-            int numberOfPlayers = 2;
-            Board board = new Board(numberOfPlayers);
+            /*
             bool doPrint = false;
-
+            
             //this is for tests
             Tests.testPlaceWall(board, 0, 0, "H", doPrint);
             Tests.testPlaceWall(board, 0, 1, "H", doPrint);
@@ -30,69 +29,61 @@ namespace Quaridor
             Tests.testPlaceWall(board, 4, 3, "H", doPrint);
             Tests.testPlaceWall(board, 1, 3, "V", doPrint);
             Tests.testPlaceWall(board, 1, 3, "H", doPrint);
-            /*
-            board.paintSquare(0, 0, DFSColor.Black);
-            board.paintSquare(8, 8, DFSColor.Black);
-            board.paintSquare(6, 7, DFSColor.Grey);
-            board.paintSquare(7, 5, DFSColor.Grey);
-            */
+
+            Tests.testPlaceWall(board, 8, 4, "V", doPrint);
+            Tests.testPlaceWall(board, 8, 5, "V", doPrint);
+            Tests.testPlaceWall(board, 6, 4, "H", doPrint);
+            board.movePlayer(board.getPlayer(0), Direction.Up);
+            board.movePlayer(board.getPlayer(0), Direction.Up);
+            board.movePlayer(board.getPlayer(0), Direction.Up);
             board.printBoard();
             Console.WriteLine("Press any key to continue....");
             Console.ReadKey();
-
+            */
             //present game rules
             //Console.ReadKey();
             //Console.Clear();
+
+            Console.WriteLine("Welcome to quoridor! are you 2 or 4 players?");
+            int numberOfPlayers;
+            int.TryParse(Console.ReadLine(), out numberOfPlayers);
+            Board board = new Board(numberOfPlayers);
             int row, col, currentPlayerIndex = 0;
             string[] move;
             bool isLegalMove;
+            bool doQuit = false;
 
-            /*
-            while(true)
+            Console.Clear();
+            while(!doQuit)
             {
                 isLegalMove = false;
                 Player currentPlayer = board.getPlayer(currentPlayerIndex);
                 board.printBoard();
                 while(!isLegalMove)
                 {
-                    Console.WriteLine("Please enter your move: ");
+                    Console.WriteLine("Player " + currentPlayer.getRepresentation() + ", please write your move: ");
                     move = Console.ReadLine().Split(' ');
                     move[0] = move[0].ToLower();
                     if (move[0] == "up")
                     {
-                        if (board.tryToMove(currentPlayer, Direction.Up) > 0)
-                        {
-                            currentPlayer.move(Direction.Up);
-                            isLegalMove = true;
-                        }
+                        isLegalMove = board.movePlayer(currentPlayer, Direction.Up);
                     }
                     else if (move[0] == "down")
                     {
-                        if (board.tryToMove(currentPlayer, Direction.Down) > 0)
-                        {
-                            currentPlayer.move(Direction.Down);
-                            isLegalMove = true;
-                        }
+                        isLegalMove = board.movePlayer(currentPlayer, Direction.Down);
                     }
                     else if (move[0] == "left")
                     {
-                        if (board.tryToMove(currentPlayer, Direction.Left) > 0)
-                        {
-                            currentPlayer.move(Direction.Left);
-                            isLegalMove = true;
-                        }
+                        isLegalMove = board.movePlayer(currentPlayer, Direction.Left);
                     }
                     else if (move[0] == "right")
                     {
-                        if (board.tryToMove(currentPlayer, Direction.Right) > 0)
-                        {
-                            currentPlayer.move(Direction.Right);
-                            isLegalMove = true;
-                        }
+                        isLegalMove = board.movePlayer(currentPlayer, Direction.Right);
                     }
                     else if (move[0] == "place")
                     {
-                        if (move.Length < 4 || !int.TryParse(move[2], out row) || int.TryParse(move[3], out col))
+                        if (move.Length < 4 || !int.TryParse(move[2], out row) || !int.TryParse(move[3], out col) ||
+                            row < 0 || row >Board.BOARD_SIZE || col < 0 || col > Board.BOARD_SIZE)
                         {
                             Console.WriteLine("Illegal arguments for place wall move");
                         }
@@ -101,23 +92,24 @@ namespace Quaridor
                             move[1] = move[1].ToLower();
                             if (move[1] == "hwall")
                             {
-                                if (board.placeHWall(row, col))
-                                    isLegalMove = true;
+                                isLegalMove = board.placeHWall(row, col);
                             }
                             else if (move[1] == "vwall")
                             {
-                                if (board.placeVWall(row, col))
-                                    isLegalMove = true;
+                                isLegalMove = board.placeVWall(row, col);
                             }
                         }
                     }
                     else if (move[0] == "restart")
                     {
-                        //TODO: complete
+                        board.restart();
+                        currentPlayerIndex = board.getNumberOfPlayers()-1;
+                        break;
                     }
                     else if (move[0] == "quit")
                     {
-                        //lshfleshldkfh
+                        doQuit = true;
+                        break;
                     }
 
                     if (!isLegalMove)
@@ -126,12 +118,12 @@ namespace Quaridor
                     }
                 }
                 currentPlayerIndex = (currentPlayerIndex + 1) % board.getNumberOfPlayers();
+                Console.Clear();
             }
-            //recieve an input from the player which is the move he does (moving or placing wall)
-            //if the move is legal - modify the board, reprint it and change to the next player, else print en error message and wait for another command
-            //if one of the players won - print a message, wait for him to press a key (new game?) and break out of the loop
-            //if at any time the player types "quit", we break out of the loop and the game ends.
-            */
+
+            Console.Clear();
+            Console.WriteLine("Thank you for playing, goodbye!");
+            Console.ReadKey();
         }
     }
 }

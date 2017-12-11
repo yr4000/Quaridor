@@ -30,6 +30,7 @@ namespace Quaridor
                 this.Players[3] = new Player(Direction.Left);
             }
             this.BoardRpr = initializeBoardRpr();
+            paintPlayersToBoard();
         }
 
         public Player getPlayer(int playersIndex)
@@ -68,7 +69,7 @@ namespace Quaridor
             bool res = true;
             List<int> squaresSeen = new List<int>();
 
-            int currentPosition = getSquareIDfromPosition(p.getRowPos(), p.getColPos());
+            int currentPosition = getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos());
             int nextPosition;
             PlayerCell currentSqaure = this.squares.SquareMatrix[currentPosition];
             Direction pd = p.getPlayersDirection();
@@ -85,7 +86,7 @@ namespace Quaridor
                     paintSquare(currentPosition, DFSColor.Grey);
                 }
                 //If we can move in movingDirection from currentPosition, nextPosition will get the next position index
-                nextPosition = tryToMove(p, movingDirection);
+                nextPosition = tryToMove(currentPosition, movingDirection);
 
                 //if next position is illegal or the color of the next square is not white
                 if (nextPosition < 0 || this.squares.SquareMatrix[nextPosition].color != DFSColor.White)
@@ -97,12 +98,14 @@ namespace Quaridor
                         currentSqaure.color = DFSColor.Black;
                         paintSquare(currentPosition, DFSColor.Black);
                         squaresSeen.RemoveAt(squaresSeen.Count - 1);
-                        currentPosition = squaresSeen.Last();
+                        if(!(squaresSeen.Count == 0))
+                            currentPosition = squaresSeen.Last();
                     }
                 }
                 else
                 {
                     currentPosition = nextPosition;
+                    movingDirection = pd;
                 }
                 currentSqaure = this.squares.SquareMatrix[currentPosition];
 
@@ -116,6 +119,7 @@ namespace Quaridor
 
             this.squares.clearBoard();
             paintSquaresByTheirColor();
+            paintPlayersToBoard();
             return res;
         }
 
@@ -227,7 +231,7 @@ namespace Quaridor
         }
 
         //returns the ID of a square in the square matrix
-        int getSquareIDfromPosition(int row, int col)
+        int getSquarePositionfromRowAndCol(int row, int col)
         {
             return row * BOARD_SIZE + col;
         }
@@ -258,33 +262,51 @@ namespace Quaridor
             return res;
         }
 
-        //BUG: i always move from the same spot since the player doesn't actually change it's position
+        public bool movePlayer(Player p, Direction movingDirection)
+        {
+            bool res = false;
+            
+            int playersPosition = getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos());
+            paintSquare(playersPosition, DFSColor.White);
+            if (tryToMove(playersPosition,movingDirection)>0)
+            {
+                p.move(movingDirection);
+                res = true;
+            }
+
+            paintPlayersToBoard();
+            return res;
+        }
+
         public int tryToMove(int currentPosition, Direction movingDirection)
         {
             int res = -1;
-            int currentPosition = getSquareIDfromPosition(p.getRowPos(), p.getColPos());
             switch (movingDirection)
             {
                 case Direction.Up:
-                    if(!this.HorizontalSlots.isOccupied(p.getRowPos(), p.getColPos()))
+                    if(!this.HorizontalSlots.isOccupied(this.squares.getRowFromPosition(currentPosition),
+                        this.squares.getColFromPosition(currentPosition)))
                     {
                         res = this.squares.getNeighbour(movingDirection, currentPosition);
                     }
                     break;
                 case Direction.Right:
-                    if(!this.VerticalSlots.isOccupied(p.getRowPos(), p.getColPos() + 1))
+                    if(!this.VerticalSlots.isOccupied(this.squares.getRowFromPosition(currentPosition),
+                        this.squares.getColFromPosition(currentPosition) + 1))
                     {
                         res = this.squares.getNeighbour(movingDirection, currentPosition);
                     }
                     break;
                 case Direction.Down:
-                    if(!this.HorizontalSlots.isOccupied(p.getRowPos() + 1, p.getColPos()))
+                    if(!this.HorizontalSlots.isOccupied(this.squares.getRowFromPosition(currentPosition) + 1,
+                        this.squares.getColFromPosition(currentPosition)))
                     {
                         res = this.squares.getNeighbour(movingDirection, currentPosition);
                     }
                     break;
                 case Direction.Left:
-                    if(!this.VerticalSlots.isOccupied(p.getRowPos(), p.getColPos()))
+                    if(!this.VerticalSlots.isOccupied(this.squares.getRowFromPosition(currentPosition),
+                        this.squares.getColFromPosition(currentPosition)))
                     {
                         res = this.squares.getNeighbour(movingDirection, currentPosition);
                     }
@@ -300,11 +322,11 @@ namespace Quaridor
             int rowCol = -1;
             if(p.getPlayersDirection() == Direction.Up || p.getPlayersDirection() == Direction.Down)
             {
-                rowCol = this.squares.getRowFromSquare(currentPosition);
+                rowCol = this.squares.getRowFromPosition(currentPosition);
             }
             else if(p.getPlayersDirection() == Direction.Right || p.getPlayersDirection() == Direction.Left)
             {
-                rowCol = this.squares.getColFromSquare(currentPosition);
+                rowCol = this.squares.getColFromPosition(currentPosition);
             }
 
             if(rowCol == p.getDestination())
@@ -313,6 +335,20 @@ namespace Quaridor
             }
 
             return res;
+        }
+
+        public void restart()
+        {
+            this.squares.clearBoard();
+            paintSquaresByTheirColor();
+            this.HorizontalSlots.clearSlots();
+            this.VerticalSlots.clearSlots();
+            foreach(Player p in this.Players)
+            {
+                p.initPlayer();
+            }
+            initializeBoardRpr();
+            paintPlayersToBoard();
         }
 
         //--------------------GUI----------------------------
@@ -369,11 +405,6 @@ namespace Quaridor
                 }
             }
 
-            foreach (Player p in this.Players)
-            {
-                paintPlayerToBoard(p, res);
-            }
-
             return res;
         }
 
@@ -404,38 +435,46 @@ namespace Quaridor
             }
         }
 
-        void paintPlayerToBoard(Player p, StringBuilder[][] BoardRpr)
+        void paintPlayersToBoard()
         {
-
-            BoardRpr[p.getRowPos()][this.squares.getHeight()/2]
-                [getSquareRprIndex(p.getColPos()) + this.squares.getWidth()/2] = p.getRepresentation();
+            foreach(Player p in this.Players)
+            {
+                this.BoardRpr[p.getRowPos()][this.squares.getHeight() / 2]
+                    [getSquareRprIndex(p.getColPos()) + this.squares.getWidth() / 2] = p.getRepresentation();
+            }
         }
 
         void paintHWall(int row, int col, bool doErase = false)
         {
-            char c = Block;
-            if (doErase)
-                c = Space;
-            for(int i=1; i<this.squares.getWidth()-2; i++)
+            if(!(row > BOARD_SIZE-1 || row < 0 || col > BOARD_SIZE-1 || col < 0))
             {
-                this.BoardRpr[row][0][getSquareRprIndex(col) + i] = c;
-                this.BoardRpr[row][0][getSquareRprIndex(col-1) + i] = c;
+                char c = Block;
+                if (doErase)
+                    c = Space;
+                for (int i = 1; i < this.squares.getWidth() - 2; i++)
+                {
+                    this.BoardRpr[row][0][getSquareRprIndex(col) + i] = c;
+                    this.BoardRpr[row][0][getSquareRprIndex(col - 1) + i] = c;
+                }
+                markIntersection(row, col);
             }
-            markIntersection(row, col);
         }
 
         void paintVWall(int row, int col, bool doErase = false)
         {
-            char c = Block;
-            if (doErase)
-                c = Space;
-            for (int i=1; i<this.squares.getHeight(); i++)
+            if(!(row > BOARD_SIZE-1 || row < 0 || col > BOARD_SIZE-1 || col < 0))
             {
-                this.BoardRpr[row][i][getSquareRprIndex(col)-1] = c;
-                this.BoardRpr[row - 1][i][getSquareRprIndex(col)-1] = c;
-            }
+                char c = Block;
+                if (doErase)
+                    c = Space;
+                for (int i = 1; i < this.squares.getHeight(); i++)
+                {
+                    this.BoardRpr[row][i][getSquareRprIndex(col) - 1] = c;
+                    this.BoardRpr[row - 1][i][getSquareRprIndex(col) - 1] = c;
+                }
 
-            markIntersection(row, col);
+                markIntersection(row, col);
+            }
         }
 
 
@@ -455,14 +494,18 @@ namespace Quaridor
                 for(int j=1; j<this.squares.getWidth()-2; j++)
                 {
                     this.BoardRpr[row][i][getSquareRprIndex(col) + j] = c;
+                    if(i==this.squares.getHeight()-1 && color == DFSColor.White)
+                    {
+                        this.BoardRpr[row][i][getSquareRprIndex(col) + j] = '_';
+                    }
                 }
             }
         }
 
         void paintSquare(int squarePosition, DFSColor color)
         {
-            int row = this.squares.getRowFromSquare(squarePosition);
-            int col = this.squares.getColFromSquare(squarePosition);
+            int row = this.squares.getRowFromPosition(squarePosition);
+            int col = this.squares.getColFromPosition(squarePosition);
             paintSquare(row, col, color);
         }
 
@@ -475,7 +518,7 @@ namespace Quaridor
         {
             for(int i=0; i<this.squares.SquareMatrix.Length; i++)
             {
-                paintSquare(this.squares.getRowFromSquare(i), this.squares.getColFromSquare(i), this.squares.GetSquareColor(i));
+                paintSquare(this.squares.getRowFromPosition(i), this.squares.getColFromPosition(i), this.squares.GetSquareColor(i));
             }
         }
 

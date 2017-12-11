@@ -35,15 +35,20 @@ namespace Quaridor
         public Player(Direction dir)
         {
             this.playersDirection = dir;
-            switch(dir)
+            initPlayer();
+        }
+
+        public void initPlayer()
+        {
+            switch (this.playersDirection)
             {
                 case Direction.Down:
                     this.RowPos = 0;
-                    this.ColPos = Board.BOARD_SIZE/2;
+                    this.ColPos = Board.BOARD_SIZE / 2;
                     this.rpr = 'B';
                     break;
                 case Direction.Up:
-                    this.RowPos = Board.BOARD_SIZE-1;
+                    this.RowPos = Board.BOARD_SIZE - 1;
                     this.ColPos = Board.BOARD_SIZE / 2;
                     this.rpr = 'A';
                     break;
@@ -53,7 +58,7 @@ namespace Quaridor
                     this.rpr = 'C';
                     break;
                 case Direction.Left:
-                    this.RowPos = Board.BOARD_SIZE/2;
+                    this.RowPos = Board.BOARD_SIZE / 2;
                     this.ColPos = Board.BOARD_SIZE - 1;
                     this.rpr = 'D';
                     break;
@@ -67,11 +72,11 @@ namespace Quaridor
         {
             int res = -1;
             Direction pd = this.playersDirection;
-            if(pd == Direction.Down || pd == Direction.Left)
+            if(pd == Direction.Up || pd == Direction.Left)
             {
                 res = 0;
             }
-            else if(pd == Direction.Up || pd == Direction.Right)
+            else if(pd == Direction.Down || pd == Direction.Right)
             {
                 res = Board.BOARD_SIZE - 1;
             }
@@ -89,19 +94,19 @@ namespace Quaridor
             switch(direction)
             {
                 case Direction.Up:
-                    this.RowPos++;
+                    this.RowPos--;
                     break;
                 case Direction.Right:
                     this.ColPos++;
                     break;
                 case Direction.Down:
-                    this.RowPos--;
+                    this.RowPos++;
                     break;
                 case Direction.Left:
                     this.ColPos--;
                     break;
                 default:
-                    Console.WriteLine("This move is illegal!");
+                    Console.WriteLine("This move is illegal!");     //TODO: change to something more informative
                     res = false;
                     break;
             }

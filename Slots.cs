@@ -103,5 +103,18 @@ namespace Quaridor
         {
             return this.SlotsMatrix[row, col].copy();
         }
+
+        public void clearSlots()
+        {
+            for(int i = 0; i<Board.BOARD_SIZE + 1; i++)
+            {
+                for(int j = 0; j<Board.BOARD_SIZE + 1; j++)
+                {
+                    this.SlotsMatrix[i, j].Occupied = false;
+                    this.SlotsMatrix[i, j].wall = null;
+                }
+            }
+        }
+
     }
 }
