@@ -10,24 +10,25 @@ namespace Quaridor
     class Board
     {
         public static int BOARD_SIZE = 9;
+        const int WALL_AMOUNT = 20;
         Slots VerticalSlots;
         Slots HorizontalSlots;
         Squares squares;
         Player[] Players;
         StringBuilder[][] BoardRpr;
 
-        public Board(int numberOFPlayers)
+        public Board(int numberOfPlayers)
         {
             this.VerticalSlots = new Slots();
             this.HorizontalSlots = new Slots();
             this.squares = new Squares();
-            this.Players = new Player[numberOFPlayers];
-            this.Players[0] = new Player(Direction.Up);
-            this.Players[1] = new Player(Direction.Down);
-            if(numberOFPlayers == 4)
+            this.Players = new Player[numberOfPlayers];
+            this.Players[0] = new Player(Direction.Up, WALL_AMOUNT/numberOfPlayers);
+            this.Players[1] = new Player(Direction.Down, WALL_AMOUNT / numberOfPlayers);
+            if(numberOfPlayers == 4)
             {
-                this.Players[2] = new Player(Direction.Right);
-                this.Players[3] = new Player(Direction.Left);
+                this.Players[2] = new Player(Direction.Right, WALL_AMOUNT / numberOfPlayers);
+                this.Players[3] = new Player(Direction.Left, WALL_AMOUNT / numberOfPlayers);
             }
             this.BoardRpr = initializeBoardRpr();
             paintPlayersToBoard();
@@ -265,16 +266,30 @@ namespace Quaridor
         public bool movePlayer(Player p, Direction movingDirection)
         {
             bool res = false;
-            
+            res = innerMove(p, movingDirection);
+            foreach(Player po in this.Players)
+            {
+                if(p.getRowPos() == po.getRowPos() && 
+                    p.getColPos() == po.getColPos() && 
+                    p.getRepresentation() != po.getRepresentation())
+                {
+                    innerMove(p, movingDirection);
+                }
+            }
+            paintPlayersToBoard();
+            return res;
+        }
+
+        bool innerMove(Player p, Direction movingDirection)
+        {
+            bool res = false;
             int playersPosition = getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos());
             paintSquare(playersPosition, DFSColor.White);
-            if (tryToMove(playersPosition,movingDirection)>0)
+            if (tryToMove(playersPosition, movingDirection) > -1)
             {
                 p.move(movingDirection);
                 res = true;
             }
-
-            paintPlayersToBoard();
             return res;
         }
 
@@ -316,6 +331,11 @@ namespace Quaridor
             return res;
         }
 
+        public bool playerGotToDestination(Player p)
+        {
+            return didPlayerGotToDestination(p, getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos()));
+        }
+
         bool didPlayerGotToDestination(Player p, int currentPosition)
         {
             bool res = false;
@@ -337,7 +357,7 @@ namespace Quaridor
             return res;
         }
 
-        public void restart()
+        public void restart(int numberOfPlayers)
         {
             this.squares.clearBoard();
             paintSquaresByTheirColor();
@@ -345,9 +365,9 @@ namespace Quaridor
             this.VerticalSlots.clearSlots();
             foreach(Player p in this.Players)
             {
-                p.initPlayer();
+                p.initPlayer(Board.WALL_AMOUNT/numberOfPlayers);
             }
-            initializeBoardRpr();
+            this.BoardRpr = initializeBoardRpr();
             paintPlayersToBoard();
         }
 
