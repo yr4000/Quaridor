@@ -29,17 +29,19 @@ namespace Quaridor
     {
         int RowPos;
         int ColPos;
+        int wallsAmount;
         char rpr;
         Direction playersDirection;
 
-        public Player(Direction dir)
+        public Player(Direction dir, int wallNumber)
         {
             this.playersDirection = dir;
-            initPlayer();
+            initPlayer(wallNumber);
         }
 
-        public void initPlayer()
+        public void initPlayer(int wallNumber)
         {
+            this.wallsAmount = wallNumber;
             switch (this.playersDirection)
             {
                 case Direction.Down:
@@ -114,6 +116,11 @@ namespace Quaridor
             return res;
         }
 
+        public void decreaseWalls()
+        {
+            this.wallsAmount--;
+        }
+
         public int getRowPos()
         {
             return this.RowPos;
@@ -132,6 +139,11 @@ namespace Quaridor
         public char getRepresentation()
         {
             return this.rpr;
+        }
+
+        public int getWallsAmount()
+        {
+            return this.wallsAmount;
         }
 
     }
