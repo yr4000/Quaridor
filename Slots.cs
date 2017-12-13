@@ -15,10 +15,10 @@ namespace Quaridor
         */
         public Slots()
         {
-            SlotsMatrix = new WallCell[Board.BOARD_SIZE + 1, Board.BOARD_SIZE + 1];
-            for(int i=0; i < Board.BOARD_SIZE + 1; i++)
+            SlotsMatrix = new WallCell[Board.BOARD_SIZE, Board.BOARD_SIZE];
+            for(int i=0; i < Board.BOARD_SIZE; i++)
             {
-                for(int j=0; j < Board.BOARD_SIZE + 1; j++)
+                for(int j=0; j < Board.BOARD_SIZE; j++)
                 {
                     SlotsMatrix[i,j] = new WallCell();
                 }
@@ -32,15 +32,12 @@ namespace Quaridor
         {
             bool res = true;
             //Player tries to place a wall on the edge - illegal!
-            if (RowPos1 < 0 || RowPos1 > Board.BOARD_SIZE ||
-                ColPos1 < 0 || ColPos1 > Board.BOARD_SIZE ||
-                RowPos2 < 0 || RowPos2 > Board.BOARD_SIZE ||
-                ColPos2 < 0 || ColPos2 > Board.BOARD_SIZE)
+            if (isIndexOutOfBoudaries(RowPos1, ColPos1) || isIndexOutOfBoudaries(RowPos2, ColPos2))
             {
                 res = false;
             }
             //Player tries to place a wall on an occupied slot - illegal!
-            if (this.SlotsMatrix[RowPos1, ColPos1].Occupied || this.SlotsMatrix[RowPos2, ColPos2].Occupied)
+            else if (this.SlotsMatrix[RowPos1, ColPos1].Occupied || this.SlotsMatrix[RowPos2, ColPos2].Occupied)
             {
                 res = false;
             }
@@ -61,10 +58,7 @@ namespace Quaridor
         {
             bool res = true;
             //Player tries to place a wall on the edge - illegal!
-            if (RowPos1 < 0 || RowPos1 > Board.BOARD_SIZE ||
-                ColPos1 < 0 || ColPos1 > Board.BOARD_SIZE ||
-                RowPos2 < 0 || RowPos2 > Board.BOARD_SIZE ||
-                ColPos2 < 0 || ColPos2 > Board.BOARD_SIZE)
+            if (isIndexOutOfBoudaries(RowPos1, ColPos1) || isIndexOutOfBoudaries(RowPos2, ColPos2))
             {
                 res = false;
             }
@@ -87,6 +81,10 @@ namespace Quaridor
 
         public bool isOccupied(int row, int col)
         {
+            if(isIndexOutOfBoudaries(row, col))
+            {
+                return false;
+            }
             return this.SlotsMatrix[row, col].Occupied;
         }
 
@@ -95,25 +93,36 @@ namespace Quaridor
          */
         public bool isOneWall(int RowPos1, int ColPos1, int RowPos2, int ColPos2)
         {
+            //indexes are not checked here since if somehow the bouderies are crossed, i rather get an exception
             return this.SlotsMatrix[RowPos1, ColPos1].wall.getId() == this.SlotsMatrix[RowPos2, ColPos2].wall.getId();
         }
 
         //Returns a copy of the wall in the [row,col] cell.
         public WallCell getWallFromCell(int row, int col)
         {
-            return this.SlotsMatrix[row, col].copy();
+            WallCell res = null;
+            if(!isIndexOutOfBoudaries(row, col))
+            {
+                res = this.SlotsMatrix[row, col].copy();
+            }
+            return res;
         }
 
         public void clearSlots()
         {
-            for(int i = 0; i<Board.BOARD_SIZE + 1; i++)
+            for(int i = 0; i<Board.BOARD_SIZE; i++)
             {
-                for(int j = 0; j<Board.BOARD_SIZE + 1; j++)
+                for(int j = 0; j<Board.BOARD_SIZE; j++)
                 {
                     this.SlotsMatrix[i, j].Occupied = false;
                     this.SlotsMatrix[i, j].wall = null;
                 }
             }
+        }
+
+        bool isIndexOutOfBoudaries(int row, int col)
+        {
+            return (row < 0 || row > Board.BOARD_SIZE - 1 || col < 0 || col > Board.BOARD_SIZE - 1);
         }
 
     }
