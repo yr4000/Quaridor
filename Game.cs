@@ -87,22 +87,32 @@ namespace Quaridor
                         {
                             Console.WriteLine("Illegal arguments for place wall move");
                         }
+                        else if (currentPlayer.getWallsAmount() == 0)
+                        {
+                            Console.WriteLine("No walls left!");
+                        }
                         else
                         {
                             move[1] = move[1].ToLower();
                             if (move[1] == "hwall")
                             {
                                 isLegalMove = board.placeHWall(row, col);
+                                
                             }
                             else if (move[1] == "vwall")
                             {
                                 isLegalMove = board.placeVWall(row, col);
                             }
+                            //decrease wall if the move was legal
+                            if(isLegalMove)
+                            {
+                                currentPlayer.decreaseWalls();
+                            }
                         }
                     }
                     else if (move[0] == "restart")
                     {
-                        board.restart();
+                        board.restart(numberOfPlayers);
                         currentPlayerIndex = board.getNumberOfPlayers()-1;
                         break;
                     }
@@ -115,6 +125,22 @@ namespace Quaridor
                     if (!isLegalMove)
                     {
                         Console.WriteLine("Illegal move: no such move.");
+                    }
+
+                    if(board.playerGotToDestination(currentPlayer))
+                    {
+                        Console.WriteLine("Congratulations! player " + currentPlayer.getRepresentation() + " WON!!!" + Environment.NewLine +
+                            "Would you like to play again? [Y\\n]");
+                        if(Console.ReadLine() != "Y")
+                        {
+                            doQuit = true;
+                            break;
+                        }
+                        else
+                        {
+                            board.restart(numberOfPlayers);
+                            currentPlayerIndex = board.getNumberOfPlayers() - 1;
+                        }
                     }
                 }
                 currentPlayerIndex = (currentPlayerIndex + 1) % board.getNumberOfPlayers();
