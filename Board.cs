@@ -430,11 +430,25 @@ namespace Quaridor
 
         public void printBoard()
         {
-            foreach(StringBuilder[] row in this.BoardRpr)
+            Console.Write("    ");
+            for(int i = 1; i<this.BoardRpr.Length; i++)
             {
-                foreach(StringBuilder slice in row)
+                Console.Write(String.Format("        {0}",i));
+            }
+            Console.Write(Environment.NewLine);
+            for(int i = 0; i < this.BoardRpr.Length; i++)
+            {
+                for(int j = 0; j < this.BoardRpr[i].Length; j++)
                 {
-                    Console.Write(slice);
+                    if(i==0 || j>0)
+                    {
+                        Console.Write("    ");
+                    }
+                    else
+                    {
+                        Console.Write(String.Format("{0} - ", i));
+                    }
+                    Console.Write(this.BoardRpr[i][j]);
                 }
             }
         }
