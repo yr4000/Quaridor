@@ -47,6 +47,12 @@ namespace Quaridor
             Console.WriteLine("Welcome to quoridor! are you 2 or 4 players?");
             int numberOfPlayers;
             int.TryParse(Console.ReadLine(), out numberOfPlayers);
+            if(!(numberOfPlayers==2 || numberOfPlayers==4))
+            {
+                Console.WriteLine("Ilegal number of players - creating a board for 2 players.");
+                numberOfPlayers = 2;
+            }
+            Game.printRules();
             Board board = new Board(numberOfPlayers);
             int row, col, currentPlayerIndex = 0;
             string[] move;
@@ -149,6 +155,60 @@ namespace Quaridor
 
             Console.Clear();
             Console.WriteLine("Thank you for playing, goodbye!");
+            Console.ReadKey();
+        }
+
+        static public void printRules()
+        {
+            Console.Write(
+          "     How to play:\n" +
+          "     The goal of each player is to reach to the other side of the board.\n" +
+          "     Each turn you can choose to move or to place a wall.Each player has 5 or 10 walls\n" +
+          "     (depends on the amount of players)\n" +
+
+          "     You can use the following commands:\n" +
+          "     - up, down, right, left: will move your piece up, down, right or left\n" +
+
+          "     - place hwall / vwall i j: allows you to place a horizontal or a vertical wall on the[i][j] slot\n" +
+          "       Examples:\n" +
+          "       place hwall 2 2\n" +
+          "            1        2        3\n" +
+          "      ______   ______   ______ \n" +
+          "     |      | |      | |      |\n" +
+          "     |      | |      | |      |\n" +
+          "     |______| |______| |______|\n" +
+          "  1 - ______   ______   ______ \n" +
+          "     |      | |      | |      |\n" +
+          "     |      | |   A  | |      |\n" +
+          "     |______| |______| |______|\n" +
+          "  2 - ______   BBBBBB B BBBBBB\n" +
+          "     |      | |      | |      |\n" +
+          "     |      | |      | |      |\n" +
+          "     |______| |______| |______|\n" +
+          "  3 - \n" +
+
+          "      place vwall 1 1\n" +
+          "             1        2        3\n" +
+          "      ______   ______   ______  \n" +
+          "     |      |B|      | |      | \n" +
+          "     |      |B|      | |      | \n" +
+          "     |______|B|______| |______| \n" +
+          "  1 - ______ B ______   ______  \n" +
+          "     |      |B|      | |      | \n" +
+          "     |      |B|   A  | |      | \n" +
+          "     |______|B|______| |______| \n" +
+          "  2 - ______   ______   ______  \n" +
+          "     |      | |      | |      | \n" +
+          "     |      | |      | |      | \n" +
+          "     |______| |______| |______| \n" +
+          "  3 -\n" +
+
+          "     - restart: will start a new game\n" +
+          "     - quit: will quit the game.\n" +
+
+          "  Have fun!\n" +
+         "  (press on any key to continue)\n");
+
             Console.ReadKey();
         }
     }
