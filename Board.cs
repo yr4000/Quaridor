@@ -357,13 +357,61 @@ namespace Quaridor
          */
         int findShortestPath(Player p)
         {
+            //initialize neccessary arguments 
+            int shortestPathLen = int.MaxValue;
             List<int> sqauresQ = new List<int>();
             for(int i=0; i<BOARD_SIZE*BOARD_SIZE; i++)
             {
                 sqauresQ.Add(i);
             }
-            int currentSquare = p.getSquare(); 
+            int currentSquare = p.getSquare();
+            int neigh;
+            bool allLonger = false;
+            Direction d = Direction.Up;
+            this.squares[currentSquare].distFromSource = 0;
+            
+            while(sqauresQ.Count()!=0 && !allLonger)
+            {
+                //checking eack possible direction
+                for(int i=0; i<4; i++)
+                {
+                    neigh = tryToMove(currentSquare, d);
+                    if(neigh < 0)
+                    {
+                        neigh = currentSquare;
+                    }
+                    else if(this.squares[neigh].distFromSource > this.squares[currentSquare].distFromSource + 1)
+                    {
+                        this.squares[neigh].distFromSource = this.squares[currentSquare].distFromSource + 1;
+                    }
 
+                    d = getNextDirection(d);
+                }
+
+                //pop current square and find the next square to search from
+                sqauresQ.Remove(currentSquare);
+                currentSquare = sqauresQ[0];
+                foreach(int square in sqauresQ)
+                {
+                    if(this.squares[currentSquare].distFromSource > this.squares[square].distFromSource)
+                    {
+                        currentSquare = square;
+                    }
+                }
+
+                //if the sqaure we found is further away from the shortest path we found there is no point to continue the search.
+                if(this.squares[currentSquare].distFromSource >= shortestPathLen)
+                {
+                    allLonger = true;
+                }
+                //if we got to desteneation, update result
+                else if(didPlayerGotToDestination(p,currentSquare) && this.squares[currentSquare].distFromSource < shortestPathLen)
+                {
+                    shortestPathLen = this.squares[currentSquare].distFromSource;
+                }
+            }
+
+            return shortestPathLen;
         }
 
         public void restart(int numberOfPlayers)
