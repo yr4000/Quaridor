@@ -15,10 +15,12 @@ namespace Quaridor
     class PlayerCell : Cell
     {
         public DFSColor color;
+        public int distFromSource;
 
         public PlayerCell()
         {
             this.color = DFSColor.White;
+            this.distFromSource = int.MaxValue;
         }
     }
 

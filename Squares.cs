@@ -8,7 +8,8 @@ namespace Quaridor
 {
     class Squares
     {
-        public PlayerCell[] SquareMatrix;
+        PlayerCell[] SquareMatrix;
+        //Width and Height properties are for GUI purposes
         int Width = 9;
         int Height = 4;
 
@@ -21,11 +22,18 @@ namespace Quaridor
             }
         }
 
+        public PlayerCell this[int i]
+        {
+            get { return this.SquareMatrix[i]; }
+            set { this.SquareMatrix[i] = value; }
+        }
+
         public void clearBoard()
         {
             for (int i = 0; i < this.SquareMatrix.Length; i++)
             {
                 this.SquareMatrix[i].color = DFSColor.White;
+                this.SquareMatrix[i].distFromSource = int.MaxValue;
             }
         }
 
@@ -94,6 +102,11 @@ namespace Quaridor
         public DFSColor GetSquareColor(int i)
         {
             return SquareMatrix[i].color;
+        }
+
+        public int size()
+        {
+            return this.SquareMatrix.Length;
         }
     }
 }

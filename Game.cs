@@ -35,6 +35,7 @@ namespace Quaridor
                 while(!isLegalMove)
                 {
                     Console.WriteLine("Player " + currentPlayer.getRepresentation() + ", please write your move: ");
+                    Console.WriteLine("You have " + currentPlayer.getWallsAmount() + " walls left.");
                     move = Console.ReadLine().Split(' ');
                     move[0] = move[0].ToLower();
                     if (move[0] == "up")
@@ -102,6 +103,8 @@ namespace Quaridor
 
                     if(board.playerGotToDestination(currentPlayer))
                     {
+                        Console.Clear();
+                        board.printBoard();
                         Console.WriteLine("Congratulations! player " + currentPlayer.getRepresentation() + " WON!!!" + Environment.NewLine +
                             "Would you like to play again? [Y\\n]");
                         if(Console.ReadLine() != "Y")

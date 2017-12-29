@@ -131,6 +131,12 @@ namespace Quaridor
             return this.ColPos;
         }
 
+        //returns the ID of a square in the square matrix
+        public int getSquare()
+        {
+            return this.RowPos * Board.BOARD_SIZE + this.ColPos;
+        }
+
         public Direction getPlayersDirection()
         {
             return this.playersDirection;

@@ -70,9 +70,9 @@ namespace Quaridor
             bool res = true;
             List<int> squaresSeen = new List<int>();
 
-            int currentPosition = getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos());
+            int currentPosition = p.getSquare();
             int nextPosition;
-            PlayerCell currentSqaure = this.squares.SquareMatrix[currentPosition];
+            PlayerCell currentSqaure = this.squares[currentPosition];
             Direction pd = p.getPlayersDirection();
             Direction movingDirection = pd;
             //this.squares.SquareMatrix[currentPosition].color = DFSColor.Grey;
@@ -90,7 +90,7 @@ namespace Quaridor
                 nextPosition = tryToMove(currentPosition, movingDirection);
 
                 //if next position is illegal or the color of the next square is not white
-                if (nextPosition < 0 || this.squares.SquareMatrix[nextPosition].color != DFSColor.White)
+                if (nextPosition < 0 || this.squares[nextPosition].color != DFSColor.White)
                 {
                     movingDirection = getNextDirection(movingDirection);
                     //if we checked all moving directions around currentSquare
@@ -108,7 +108,7 @@ namespace Quaridor
                     currentPosition = nextPosition;
                     movingDirection = pd;
                 }
-                currentSqaure = this.squares.SquareMatrix[currentPosition];
+                currentSqaure = this.squares[currentPosition];
 
                 //if we got to the players destination 
                 if (didPlayerGotToDestination(p, currentPosition))
@@ -231,12 +231,6 @@ namespace Quaridor
             return true;
         }
 
-        //returns the ID of a square in the square matrix
-        int getSquarePositionfromRowAndCol(int row, int col)
-        {
-            return row * BOARD_SIZE + col;
-        }
-
         Direction getNextDirection(Direction d)
         {
             int next = ((int)d + 1) % 4;
@@ -283,7 +277,7 @@ namespace Quaridor
         bool innerMove(Player p, Direction movingDirection)
         {
             bool res = false;
-            int playersPosition = getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos());
+            int playersPosition = p.getSquare();
             paintSquare(playersPosition, DFSColor.White);
             if (tryToMove(playersPosition, movingDirection) > -1)
             {
@@ -333,7 +327,7 @@ namespace Quaridor
 
         public bool playerGotToDestination(Player p)
         {
-            return didPlayerGotToDestination(p, getSquarePositionfromRowAndCol(p.getRowPos(), p.getColPos()));
+            return didPlayerGotToDestination(p, p.getSquare());
         }
 
         bool didPlayerGotToDestination(Player p, int currentPosition)
@@ -355,6 +349,21 @@ namespace Quaridor
             }
 
             return res;
+        }
+
+        /*
+         * Using Dijkstra's algorithm we can find the shortest path from the player to it's destination.
+         * We assume that the player is not blocked, and that each edge between two squeres wights 1
+         */
+        int findShortestPath(Player p)
+        {
+            List<int> sqauresQ = new List<int>();
+            for(int i=0; i<BOARD_SIZE*BOARD_SIZE; i++)
+            {
+                sqauresQ.Add(i);
+            }
+            int currentSquare = p.getSquare(); 
+
         }
 
         public void restart(int numberOfPlayers)
@@ -550,7 +559,7 @@ namespace Quaridor
 
         void paintSquaresByTheirColor()
         {
-            for(int i=0; i<this.squares.SquareMatrix.Length; i++)
+            for(int i=0; i<this.squares.size(); i++)
             {
                 paintSquare(this.squares.getRowFromPosition(i), this.squares.getColFromPosition(i), this.squares.GetSquareColor(i));
             }
