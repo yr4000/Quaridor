@@ -10,39 +10,6 @@ namespace Quaridor
     {
         static void Main(string[] args)
         {
-            /*
-            bool doPrint = false;
-            
-            //this is for tests
-            Tests.testPlaceWall(board, 0, 0, "H", doPrint);
-            Tests.testPlaceWall(board, 0, 1, "H", doPrint);
-            Tests.testPlaceWall(board, 1, 0, "H", doPrint);
-            Tests.testPlaceWall(board, 1, 1, "H", doPrint);
-            Tests.testPlaceWall(board, 4, 4, "H", doPrint);
-
-            Tests.testPlaceWall(board, 0, 0, "V", doPrint);
-            Tests.testPlaceWall(board, 1, 0, "V", doPrint);
-            Tests.testPlaceWall(board, 0, 1, "V", doPrint);
-            Tests.testPlaceWall(board, 1, 2, "V", doPrint);
-            Tests.testPlaceWall(board, 4, 3, "V", doPrint);
-
-            Tests.testPlaceWall(board, 4, 3, "H", doPrint);
-            Tests.testPlaceWall(board, 1, 3, "V", doPrint);
-            Tests.testPlaceWall(board, 1, 3, "H", doPrint);
-
-            Tests.testPlaceWall(board, 8, 4, "V", doPrint);
-            Tests.testPlaceWall(board, 8, 5, "V", doPrint);
-            Tests.testPlaceWall(board, 6, 4, "H", doPrint);
-            board.movePlayer(board.getPlayer(0), Direction.Up);
-            board.movePlayer(board.getPlayer(0), Direction.Up);
-            board.movePlayer(board.getPlayer(0), Direction.Up);
-            board.printBoard();
-            Console.WriteLine("Press any key to continue....");
-            Console.ReadKey();
-            */
-            //present game rules
-            //Console.ReadKey();
-            //Console.Clear();
 
             Console.WriteLine("Welcome to quoridor! are you 2 or 4 players?");
             int numberOfPlayers;
@@ -163,7 +130,7 @@ namespace Quaridor
             Console.Write(
           "     How to play:\n" +
           "     The goal of each player is to reach to the other side of the board.\n" +
-          "     Each turn you can choose to move or to place a wall.Each player has 5 or 10 walls\n" +
+          "     Each turn you can choose to move or to place a wall. Each player has 5 or 10 walls\n" +
           "     (depends on the amount of players)\n" +
 
           "     You can use the following commands:\n" +
@@ -172,7 +139,7 @@ namespace Quaridor
           "     - place hwall / vwall i j: allows you to place a horizontal or a vertical wall on the[i][j] slot\n" +
           "       Examples:\n" +
           "       place hwall 2 2\n" +
-          "            1        2        3\n" +
+          "             1        2        3\n" +
           "      ______   ______   ______ \n" +
           "     |      | |      | |      |\n" +
           "     |      | |      | |      |\n" +
@@ -207,7 +174,7 @@ namespace Quaridor
           "     - quit: will quit the game.\n" +
 
           "  Have fun!\n" +
-         "  (press on any key to continue)\n");
+          " (press on any key to continue)\n");
 
             Console.ReadKey();
         }
