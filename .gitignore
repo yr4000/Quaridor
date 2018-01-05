@@ -1,5 +1,8 @@
-bin/*
-obj/*
-Properties/*
 *.config
 *.csproj
+*.sln
+.vs/*
+packages/*
+*/bin/*
+*/obj/*
+*/Properties/*
