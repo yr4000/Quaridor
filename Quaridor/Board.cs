@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Quaridor
 {
 
-    class Board
+    public class Board
     {
         public static int BOARD_SIZE = 9;
         const int WALL_AMOUNT = 20;
@@ -158,6 +158,7 @@ namespace Quaridor
                 return false;
             }
             
+
             foreach(Player p in this.Players)
             {
                 if(isPlayerBlocked(p))
@@ -352,10 +353,10 @@ namespace Quaridor
         }
 
         /*
-         * Using Dijkstra's algorithm we can find the shortest path from the player to it's destination.
+         * Using Dijkstra like algorithm we can find the shortest path from the player to it's destination.
          * We assume that the player is not blocked, and that each edge between two squeres wights 1
          */
-        int findShortestPath(Player p)
+        public int findShortestPath(Player p)
         {
             //initialize neccessary arguments 
             int shortestPathLen = int.MaxValue;
@@ -411,6 +412,7 @@ namespace Quaridor
                 }
             }
 
+            this.squares.clearBoard();
             return shortestPathLen;
         }
 

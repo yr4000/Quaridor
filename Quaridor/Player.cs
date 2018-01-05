@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Quaridor
 {
-    enum Direction {Up, Right, Down, Left}
+    public enum Direction {Up, Right, Down, Left}
 
     class Wall
     {
@@ -25,7 +25,7 @@ namespace Quaridor
         }
     }
 
-    class Player
+    public class Player
     {
         int RowPos;
         int ColPos;
