@@ -14,10 +14,10 @@ namespace Quaridor
             switch(type)
             {
                 case "H":
-                    res = b.placeHWall(row, col);
+                    res = b.PlaceHWall(row, col);
                     break;
                 case "V":
-                    res = b.placeVWall(row, col);
+                    res = b.PlaceVWall(row, col);
                     break;
                 default:
                     Console.WriteLine("ERROR: illegal wall placement in Tests.testPlaceWall");

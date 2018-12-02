@@ -30,8 +30,8 @@ namespace Quaridor
             while(!doQuit)
             {
                 isLegalMove = false;
-                Player currentPlayer = board.getPlayer(currentPlayerIndex);
-                board.printBoard();
+                Player currentPlayer = board.GetPlayer(currentPlayerIndex);
+                board.PrintBoard();
                 while(!isLegalMove)
                 {
                     Console.WriteLine("Player " + currentPlayer.getRepresentation() + ", please write your move: ");
@@ -40,24 +40,24 @@ namespace Quaridor
                     move[0] = move[0].ToLower();
                     if (move[0] == "up")
                     {
-                        isLegalMove = board.movePlayer(currentPlayer, Direction.Up);
+                        isLegalMove = board.MovePlayer(currentPlayer, Direction.Up);
                     }
                     else if (move[0] == "down")
                     {
-                        isLegalMove = board.movePlayer(currentPlayer, Direction.Down);
+                        isLegalMove = board.MovePlayer(currentPlayer, Direction.Down);
                     }
                     else if (move[0] == "left")
                     {
-                        isLegalMove = board.movePlayer(currentPlayer, Direction.Left);
+                        isLegalMove = board.MovePlayer(currentPlayer, Direction.Left);
                     }
                     else if (move[0] == "right")
                     {
-                        isLegalMove = board.movePlayer(currentPlayer, Direction.Right);
+                        isLegalMove = board.MovePlayer(currentPlayer, Direction.Right);
                     }
                     else if (move[0] == "place")
                     {
                         if (move.Length < 4 || !int.TryParse(move[2], out row) || !int.TryParse(move[3], out col) ||
-                            row < 0 || row >Board.BOARD_SIZE || col < 0 || col > Board.BOARD_SIZE)
+                            row < 0 || row >Board.BoardSize || col < 0 || col > Board.BoardSize)
                         {
                             Console.WriteLine("Illegal arguments for place wall move");
                         }
@@ -70,12 +70,12 @@ namespace Quaridor
                             move[1] = move[1].ToLower();
                             if (move[1] == "hwall")
                             {
-                                isLegalMove = board.placeHWall(row, col);
+                                isLegalMove = board.PlaceHWall(row, col);
                                 
                             }
                             else if (move[1] == "vwall")
                             {
-                                isLegalMove = board.placeVWall(row, col);
+                                isLegalMove = board.PlaceVWall(row, col);
                             }
                             //decrease wall if the move was legal
                             if(isLegalMove)
@@ -86,8 +86,8 @@ namespace Quaridor
                     }
                     else if (move[0] == "restart")
                     {
-                        board.restart(numberOfPlayers);
-                        currentPlayerIndex = board.getNumberOfPlayers()-1;
+                        board.Restart(numberOfPlayers);
+                        currentPlayerIndex = board.GetNumberOfPlayers()-1;
                         break;
                     }
                     else if (move[0] == "quit")
@@ -101,10 +101,10 @@ namespace Quaridor
                         Console.WriteLine("Illegal move: no such move.");
                     }
 
-                    if(board.playerGotToDestination(currentPlayer))
+                    if(board.PlayerGotToDestination(currentPlayer))
                     {
                         Console.Clear();
-                        board.printBoard();
+                        board.PrintBoard();
                         Console.WriteLine("Congratulations! player " + currentPlayer.getRepresentation() + " WON!!!" + Environment.NewLine +
                             "Would you like to play again? [Y\\n]");
                         if(Console.ReadLine() != "Y")
@@ -114,12 +114,12 @@ namespace Quaridor
                         }
                         else
                         {
-                            board.restart(numberOfPlayers);
-                            currentPlayerIndex = board.getNumberOfPlayers() - 1;
+                            board.Restart(numberOfPlayers);
+                            currentPlayerIndex = board.GetNumberOfPlayers() - 1;
                         }
                     }
                 }
-                currentPlayerIndex = (currentPlayerIndex + 1) % board.getNumberOfPlayers();
+                currentPlayerIndex = (currentPlayerIndex + 1) % board.GetNumberOfPlayers();
                 Console.Clear();
             }
 

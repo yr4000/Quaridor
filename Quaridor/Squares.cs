@@ -15,7 +15,7 @@ namespace Quaridor
 
         public Squares()
         {
-            this.SquareMatrix = new PlayerCell[Board.BOARD_SIZE * Board.BOARD_SIZE];
+            this.SquareMatrix = new PlayerCell[Board.BoardSize * Board.BoardSize];
             for(int i=0; i<this.SquareMatrix.Length; i++)
             {
                 this.SquareMatrix[i] = new PlayerCell();
@@ -47,9 +47,9 @@ namespace Quaridor
             switch (dir)
             {
                 case Direction.Down:
-                    if(!(getRowFromPosition(square) >= Board.BOARD_SIZE-1))
+                    if(!(getRowFromPosition(square) >= Board.BoardSize-1))
                     {
-                        res = square + Board.BOARD_SIZE;
+                        res = square + Board.BoardSize;
                     }
                     break;
                 case Direction.Left:
@@ -61,11 +61,11 @@ namespace Quaridor
                 case Direction.Up:
                     if(!(getRowFromPosition(square) <= 0))
                     {
-                        res = square - Board.BOARD_SIZE;
+                        res = square - Board.BoardSize;
                     }
                     break;
                 case Direction.Right:
-                    if(getColFromPosition(square) != Board.BOARD_SIZE-1)
+                    if(getColFromPosition(square) != Board.BoardSize-1)
                     {
                         res = square + 1;
                     }
@@ -80,13 +80,13 @@ namespace Quaridor
         //return's the i'th index of  square
         public int getRowFromPosition(int pos)
         {
-            return pos / Board.BOARD_SIZE;
+            return pos / Board.BoardSize;
         }
 
         //return's the j'th index of  square
         public int getColFromPosition(int pos)
         {
-            return pos % Board.BOARD_SIZE;
+            return pos % Board.BoardSize;
         }
 
         public int getWidth()

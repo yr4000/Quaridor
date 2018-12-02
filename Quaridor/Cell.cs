@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quaridor
+﻿namespace Quaridor
 {
     interface Cell
     {
@@ -26,24 +20,21 @@ namespace Quaridor
 
     class WallCell: Cell
     {
-        public bool Occupied;
         public Wall wall;
 
         public WallCell()
         {
-            this.Occupied = false;
             this.wall = null;
         }
-
+        /*
         public bool isOccupied()
         {
             return this.Occupied;
         }
-
+        */
         public WallCell copy()
         {
             WallCell wc = new WallCell();
-            wc.Occupied = this.Occupied;
             wc.wall = this.wall;
             return wc;
         }

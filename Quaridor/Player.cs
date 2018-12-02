@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quaridor
 {
@@ -46,22 +42,22 @@ namespace Quaridor
             {
                 case Direction.Down:
                     this.RowPos = 0;
-                    this.ColPos = Board.BOARD_SIZE / 2;
+                    this.ColPos = Board.BoardSize / 2;
                     this.rpr = 'B';
                     break;
                 case Direction.Up:
-                    this.RowPos = Board.BOARD_SIZE - 1;
-                    this.ColPos = Board.BOARD_SIZE / 2;
+                    this.RowPos = Board.BoardSize - 1;
+                    this.ColPos = Board.BoardSize / 2;
                     this.rpr = 'A';
                     break;
                 case Direction.Right:
-                    this.RowPos = Board.BOARD_SIZE / 2;
+                    this.RowPos = Board.BoardSize / 2;
                     this.ColPos = 0;
                     this.rpr = 'C';
                     break;
                 case Direction.Left:
-                    this.RowPos = Board.BOARD_SIZE / 2;
-                    this.ColPos = Board.BOARD_SIZE - 1;
+                    this.RowPos = Board.BoardSize / 2;
+                    this.ColPos = Board.BoardSize - 1;
                     this.rpr = 'D';
                     break;
                 default:
@@ -80,7 +76,7 @@ namespace Quaridor
             }
             else if(pd == Direction.Down || pd == Direction.Right)
             {
-                res = Board.BOARD_SIZE - 1;
+                res = Board.BoardSize - 1;
             }
 
             return res;
@@ -134,7 +130,7 @@ namespace Quaridor
         //returns the ID of a square in the square matrix
         public int getSquare()
         {
-            return this.RowPos * Board.BOARD_SIZE + this.ColPos;
+            return this.RowPos * Board.BoardSize + this.ColPos;
         }
 
         public Direction getPlayersDirection()
